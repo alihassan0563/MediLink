@@ -9,6 +9,17 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* prevent sticky header from covering anchor targets */
+  scroll-padding-top: 80px;
+}
+
+a, button, html {
+  scroll-behavior: smooth;
+}
+
+/* Any element with an id (common for hash links) will offset under the sticky header */
+[id] {
+  scroll-margin-top: 80px;
 }
 
 a {

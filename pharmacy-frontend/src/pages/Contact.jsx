@@ -121,7 +121,7 @@ const Contact = () => {
         </div>
       </section>
 
-      <section className="contact-form-section full-width-section">
+      <section id="contact-form" className="contact-form-section full-width-section">
         <div className="form-wrapper">
           <div className="form-visual">
              <img src="/contant image.jpg" alt="Contact" />

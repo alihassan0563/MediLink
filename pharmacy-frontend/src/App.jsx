@@ -14,10 +14,12 @@ import Contact from "./pages/Contact";
 import TestPopup from "./pages/TestPopup";
 import About from "./pages/About";
 import LoginChoice from "./pages/LoginChoice";
+import ScrollToTop from "./component/ScrollToTop";
 
 function App() {
   return ( 
     <Router>
+      <ScrollToTop />
       <AuthProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -39,4 +41,5 @@ function App() {
 }
 
 export default App;
+
 
