@@ -4,7 +4,7 @@ import Header from "../component/Header";
 import "./About.css";
 
 const team = [
-  { name: "Arman Ejaz", role: "Backend & Database Developer", img: "/Arman.jpeg" },
+  { name: "Arman Ejaz", role: "Backend & Database Developer", img: "/Arman.jpg" },
   { name: "Ali Hassan", role: "Frontend Developer", img: "/ali.jpg" },
   { name: "Sikandar Aftab", role: "Market Research & Analyst", img: "/sikander.jpeg" },
 ];
