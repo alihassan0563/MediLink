@@ -72,19 +72,50 @@ const Contact = () => {
     <div className="contact-page">
       <Header />
 
-      <section className="contact-hero full-width-bg">
-        <div
-          className="contact-hero-bg"
-          style={{
-            backgroundImage:
-              "url('https://plus.unsplash.com/premium_photo-1681995729207-04e4d7210227?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
-          }}
-        />
-        <div className="contact-hero-content">
-          <h1>Contact Us</h1>
-          <p>
-          Have questions, feedback, or need assistance with your medicine requests? Our team at MediLink is always ready to support you. Reach out to us and we’ll get back to you as soon as possible.
-          </p>
+      <section className="contact-hero-section">
+        <div className="contact-hero-container">
+          <div className="contact-hero-right">
+            <h1 className="contact-hero-title">
+              Get in Touch with <span className="highlight">Our Team</span>
+            </h1>
+            <p className="contact-hero-subtitle">
+              Have questions, feedback, or need assistance with your medicine requests? Our dedicated team at MediLink is always ready to support you. We're committed to providing exceptional customer service and ensuring your healthcare needs are met with care and professionalism.
+            </p>
+            <div className="contact-hero-features">
+              <div className="contact-feature">
+                <div className="contact-feature-icon">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                </div>
+                <span>24/7 Customer Support</span>
+              </div>
+              <div className="contact-feature">
+                <div className="contact-feature-icon">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                </div>
+                <span>Quick Response Time</span>
+              </div>
+              <div className="contact-feature">
+                <div className="contact-feature-icon">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                </div>
+                <span>Expert Healthcare Guidance</span>
+              </div>
+            </div>
+          </div>
+          <div className="contact-hero-left">
+            <div className="contact-hero-image">
+              <img 
+                src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                alt="Professional customer service team" 
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -96,7 +127,8 @@ const Contact = () => {
             </svg>
           </div>
           <h3>Email</h3>
-          <a className="value-link" href="mailto:support@pharmacyconnect.app">support@pharmacyconnect.app</a>
+          <a className="value-link" href="mailto:alihassan940210@gmail.com">alihassan940210@gmail.com</a>
+          <a className="value-link" href="mailto:armanejaz69@gmail.com">armanejaz69@gmail.com</a>
         </div>
 
         <div className="contact-card">
@@ -106,7 +138,8 @@ const Contact = () => {
             </svg>
           </div>
           <h3>Phone</h3>
-          <a className="value-link" href="tel:+923001234567">+92 300 1234567</a>
+          <a className="value-link" href="tel:+923462240103">+92 3462240103</a><br />
+          <a className="value-link" href="tel:+923316714435">+92 3316714435</a>
         </div>
 
         <div className="contact-card">
