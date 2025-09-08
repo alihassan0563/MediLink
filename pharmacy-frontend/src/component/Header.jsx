@@ -36,10 +36,12 @@ const Header = () => {
       </div>
       <nav id="primary-navigation" className={`nav-center${mobileOpen ? " open" : ""}`}>
         <Link to="/">Home</Link>
-        <a href="#faq">FAQs</a>
-        <Link to="/contact">Contact</Link>
-        <Link to="/about">About</Link>
-        <a href="#features">Features</a>
+        <Link to="/#faq">FAQs</Link>
+        <Link to="/#features">Features</Link>
+        <Link to="/about">About Us</Link>
+        <Link to="/contact">Contact Us</Link>
+        
+        
         {!customer && !pharmacy && (
           <Link to="/login" className="login-box login-mobile">Login</Link>
         )}
