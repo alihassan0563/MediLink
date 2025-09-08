@@ -21,18 +21,23 @@ const PharmacyAuth = () => {
     phone: ""
   });
   const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const navigate = useNavigate();
   const { customer, loginPharmacy } = useAuth();
 
   const cities = ["Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad", "Multan", "Peshawar", "Sialkot"];
 
   const handleChange = e => {
+    if (e.target.name === 'email') {
+      setEmailError("");
+    }
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
     setError("");
+    setEmailError("");
     
     // Check if customer is logged in before allowing pharmacy login
     if (!isSignup && customer) {
@@ -71,7 +76,13 @@ const PharmacyAuth = () => {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.message || "Something went wrong");
+        if (isSignup && (data?.message || "").toLowerCase().includes("invalid or risky email")) {
+          const msg = "Email is invalid or risky. Please use a valid email.";
+          setEmailError(msg);
+          setError(msg);
+        } else {
+          setError(data.message || "Something went wrong");
+        }
         return;
       }
       if (!isSignup) {
@@ -137,6 +148,9 @@ const PharmacyAuth = () => {
                     onChange={handleChange}
                     required
                   />
+                  {isSignup && emailError && (
+                    <div className="field-error" style={{ color: '#c53030', fontSize: '0.85rem', marginTop: '0.25rem' }}>{emailError}</div>
+                  )}
                 </div>
                 <div className="form-section">
                   <label className="form-label" htmlFor="pharmacyName">Pharmacy Name</label>

@@ -2,6 +2,7 @@ const Customer = require('../models/Customer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
+const axios = require('axios');
 
 exports.signup = async (req, res) => {
   try {
@@ -10,6 +11,30 @@ exports.signup = async (req, res) => {
     if (!validator.isEmail(email)) return res.status(400).json({ message: 'Invalid email format' });
     if (!/^03[0-9]{9}$/.test(phone)) return res.status(400).json({ message: 'Invalid phone format' });
     if (!validator.isStrongPassword(password, { minLength: 6 })) return res.status(400).json({ message: 'Password too weak' });
+
+    // Kickbox email verification
+    try {
+      const apiKey = process.env.KICKBOX_API_KEY;
+      console.log('KICKBOX_API_KEY:', apiKey ? '[set]' : '[not set]'); // Debug log
+      if (!apiKey) {
+        return res.status(500).json({ success: false, message: 'Kickbox API key not configured' });
+      }
+      const kickboxRes = await axios.get('https://api.kickbox.com/v2/verify', {
+        params: { email, apikey: apiKey }
+      });
+      const result = kickboxRes.data.result;
+      if (result !== 'deliverable') {
+        return res.status(400).json({ success: false, message: 'Invalid or risky email address' });
+      }
+    } catch (err) {
+      const kbData = err.response?.data;
+      if (kbData?.code === 'FORBIDDEN') {
+        console.error('Kickbox error (FORBIDDEN):', kbData);
+        return res.status(500).json({ success: false, message: 'Kickbox API key is not permitted to use the Verification API. Enable access for this key or use a key with Email Verification permissions.' });
+      }
+      console.error('Kickbox error:', kbData || err.message); // Debug log
+      return res.status(500).json({ success: false, message: 'Failed to validate email address', error: kbData || err.message });
+    }
 
     const existing = await Customer.findOne({ email });
     if (existing) return res.status(400).json({ message: 'Email already exists' });
