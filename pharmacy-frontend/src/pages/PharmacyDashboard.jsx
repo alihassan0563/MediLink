@@ -942,6 +942,10 @@ const PharmacyDashboard = () => {
 
 
 
+  const formatCurrency = (num) => new Intl.NumberFormat('en-PK', { style: 'currency', currency: 'PKR', minimumFractionDigits: 2 }).format(Number(num || 0));
+
+
+
   return (
 
     <div className="pharmacy-dashboard-bg">
@@ -1556,7 +1560,7 @@ const PharmacyDashboard = () => {
 
                                   </td>
 
-                                  <td>₹{(med.totalPrice || 0).toFixed(2)}</td>
+                                  <td>{formatCurrency(med.totalPrice)}</td>
 
                                 </tr>
 
@@ -1578,7 +1582,7 @@ const PharmacyDashboard = () => {
 
                           <div className="input-group">
 
-                            <label>Delivery Charges (₹):</label>
+                            <label>Delivery Charges (₨):</label>
 
                             <input
 
@@ -1644,7 +1648,7 @@ const PharmacyDashboard = () => {
 
                           <span>Subtotal:</span>
 
-                          <span>₹{calculateSubtotal().toFixed(2)}</span>
+                          <span>{formatCurrency(calculateSubtotal())}</span>
 
                         </div>
 
@@ -1652,7 +1656,7 @@ const PharmacyDashboard = () => {
 
                           <span>Delivery Charges:</span>
 
-                          <span>₹{(billData.deliveryCharges || 0).toFixed(2)}</span>
+                          <span>{formatCurrency(billData.deliveryCharges)}</span>
 
                         </div>
 
@@ -1660,7 +1664,7 @@ const PharmacyDashboard = () => {
 
                           <span><strong>Total Amount:</strong></span>
 
-                          <span><strong>₹{calculateTotal().toFixed(2)}</strong></span>
+                          <span><strong>{formatCurrency(calculateTotal())}</strong></span>
 
                         </div>
 
@@ -1788,9 +1792,9 @@ const PharmacyDashboard = () => {
 
                                   <td>{med.quantity}</td>
 
-                                  <td>₹{Number(med.pricePerUnit || 0).toFixed(2)}</td>
+                                  <td>{formatCurrency(Number(med.pricePerUnit || 0))}</td>
 
-                                  <td>₹{Number(med.totalPrice || 0).toFixed(2)}</td>
+                                  <td>{formatCurrency(Number(med.totalPrice || 0))}</td>
 
                                 </tr>
 
@@ -1832,7 +1836,7 @@ const PharmacyDashboard = () => {
 
                                   <div style={{ color: '#555' }}>Medicine Amount</div>
 
-                                  <div style={{ textAlign: 'right', fontWeight: 600 }}>₹{subtotal.toFixed(2)}</div>
+                                  <div style={{ textAlign: 'right', fontWeight: 600 }}>{formatCurrency(subtotal)}</div>
 
                                 </div>
 
@@ -1848,7 +1852,7 @@ const PharmacyDashboard = () => {
 
                                   <div style={{ color: '#555' }}>Delivery Charges</div>
 
-                                  <div style={{ textAlign: 'right', fontWeight: 600 }}>₹{Number(billDetails.deliveryCharges || 0).toFixed(2)}</div>
+                                  <div style={{ textAlign: 'right', fontWeight: 600 }}>{formatCurrency(Number(billDetails.deliveryCharges || 0))}</div>
 
                                 </div>
 
@@ -1860,7 +1864,7 @@ const PharmacyDashboard = () => {
 
                                 <div><strong>Grand Total</strong></div>
 
-                                <div><strong>₹{Number(billDetails.totalAmount || subtotal + Number(billDetails.deliveryCharges || 0)).toFixed(2)}</strong></div>
+                                <div><strong>{formatCurrency(Number(billDetails.totalAmount || subtotal + Number(billDetails.deliveryCharges || 0)))}</strong></div>
 
                               </div>
 

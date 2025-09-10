@@ -34,7 +34,9 @@ const SelectPharmacy = () => {
   }, [city]);
 
   return (
+
     <div className="buy-medicine-bg">
+      
       <div className="buy-medicine-container">
         <div className="buy-medicine-inner form-visible">
           <h1 style={{ textAlign: 'center', fontWeight: 900, fontSize: 32, color: '#2ca7a0', marginBottom: 32 }}>Select a Pharmacy</h1>
