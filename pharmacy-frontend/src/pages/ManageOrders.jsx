@@ -13,7 +13,8 @@ export default function ManageOrders() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to load orders');
-      setItems(data);
+      // Filter out orders deleted by admin
+      setItems(data.filter(o => o.status !== 'deleted by admin'));
     } catch (err) {
       setError(err.message);
     }
@@ -29,7 +30,8 @@ export default function ManageOrders() {
     });
     const data = await res.json();
     if (!res.ok) { setError(data.message || 'Action failed'); return; }
-    setItems((prev) => prev.map((o) => (o._id === id ? data.order : o)));
+    setItems((prev) => prev.filter((o) => o._id !== id));
+    window.dispatchEvent(new Event('orderChanged'));
   };
 
   return (

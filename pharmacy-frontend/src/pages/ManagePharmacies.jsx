@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function ManagePharmacies() {
   const [items, setItems] = useState([]);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const token = localStorage.getItem('admin_token');
 
@@ -42,7 +43,12 @@ export default function ManagePharmacies() {
     });
     const data = await res.json();
     if (!res.ok) { setError(data.message || 'Delete failed'); return; }
-    setItems((prev) => prev.filter((p) => p._id !== id));
+    await load(); // Reload from server to reflect soft delete
+    window.dispatchEvent(new Event('pharmacyChanged'));
+    // If the user is on the dashboard, reload the page to update stats
+    if (window.location.pathname === '/admin') {
+      window.location.reload();
+    }
   };
 
   return (

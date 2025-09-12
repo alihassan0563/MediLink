@@ -22,6 +22,14 @@ export default function AdminDashboard() {
       }
     };
     load();
+    // Listen for pharmacy and order changes
+    const handler = () => load();
+    window.addEventListener('pharmacyChanged', handler);
+    window.addEventListener('orderChanged', handler);
+    return () => {
+      window.removeEventListener('pharmacyChanged', handler);
+      window.removeEventListener('orderChanged', handler);
+    };
   }, []);
 
   return (

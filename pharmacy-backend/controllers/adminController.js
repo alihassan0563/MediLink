@@ -54,7 +54,7 @@ exports.stats = async (req, res) => {
   try {
     const [customers, pharmacies, orders, pendingPharmacies] = await Promise.all([
       Customer.countDocuments({}),
-      Pharmacy.countDocuments({}),
+      Pharmacy.countDocuments({ status: { $ne: 'deleted' } }),
       Request.countDocuments({}),
       Pharmacy.countDocuments({ status: 'pending' })
     ]);
@@ -66,7 +66,8 @@ exports.stats = async (req, res) => {
 
 exports.listPharmacies = async (req, res) => {
   try {
-    const list = await Pharmacy.find({}).select('-password');
+    // Only return pharmacies that are not deleted
+    const list = await Pharmacy.find({ status: { $ne: 'deleted' } }).select('-password');
     res.json(list);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
@@ -93,7 +94,7 @@ exports.deletePharmacy = async (req, res) => {
     const { id } = req.params;
     const deleted = await Pharmacy.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: 'Pharmacy not found' });
-    res.json({ message: 'Pharmacy deleted' });
+    res.json({ message: 'Pharmacy permanently deleted' });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -159,13 +160,9 @@ exports.updateOrderStatus = async (req, res) => {
 exports.deleteOrder = async (req, res) => {
   try {
     const { id } = req.params;
-    const doc = await Request.findByIdAndUpdate(
-      id,
-      { status: 'rejected', statusMessage: 'Rejected by admin' },
-      { new: true }
-    );
-    if (!doc) return res.status(404).json({ message: 'Order not found' });
-    res.json({ message: 'Order rejected by admin', order: doc });
+    const deleted = await Request.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ message: 'Order not found' });
+    res.json({ message: 'Order permanently deleted' });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
