@@ -1,9 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "/pharmacy-logo.png";
 import "./Footer.css";
 
 const Footer = () => {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  if (isAdminRoute) return null;
   return (
     <footer className="site-footer">
       <div className="footer-inner">

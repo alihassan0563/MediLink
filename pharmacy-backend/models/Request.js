@@ -15,7 +15,7 @@ const requestSchema = new mongoose.Schema({
   selectedPharmacies: [String], // Array of pharmacy IDs as strings
   pharmacyNames: [String], // Array of pharmacy names (order matches selectedPharmacies)
   rejectedPharmacies: { type: [String], default: [] }, // Pharmacies that declined the request (keep them visible to customer)
-  status: { type: String, enum: ['pending', 'accepted', 'rejected', 'completed'], default: 'pending' },
+  status: { type: String, enum: ['pending', 'accepted', 'rejected', 'completed', 'cancelled'], default: 'pending' },
   acceptedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Pharmacy' },
   bill: { type: mongoose.Schema.Types.ObjectId, ref: 'Bill' },
   createdAt: { type: Date, default: Date.now }

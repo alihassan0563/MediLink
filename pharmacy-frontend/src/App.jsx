@@ -15,6 +15,12 @@ import TestPopup from "./pages/TestPopup";
 import About from "./pages/About";
 import LoginChoice from "./pages/LoginChoice";
 import ScrollToTop from "./component/ScrollToTop";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import ManagePharmacies from "./pages/ManagePharmacies";
+import ManageCustomers from "./pages/ManageCustomers";
+import ManageOrders from "./pages/ManageOrders";
+import AdminRoute from "./AdminRoute";
 
 function App() {
   return ( 
@@ -33,6 +39,11 @@ function App() {
           <Route path="/user-requests" element={<UserRequests />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/test-popup" element={<TestPopup />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/pharmacies" element={<AdminRoute><ManagePharmacies /></AdminRoute>} />
+          <Route path="/admin/customers" element={<AdminRoute><ManageCustomers /></AdminRoute>} />
+          <Route path="/admin/orders" element={<AdminRoute><ManageOrders /></AdminRoute>} />
         </Routes>
         <Footer />
       </AuthProvider>
