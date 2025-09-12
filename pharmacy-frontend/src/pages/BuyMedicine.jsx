@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import Header from "../component/Header";
 import "./BuyMedicine.css";
+ 
 
 const initialMedicine = { 
   name: "", 
@@ -16,11 +17,139 @@ const cities = ["Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad", "M
 
 const medicineTypes = ["Tablet", "Capsule", "Syrup", "Injection", "Cream/Ointment", "Drop"];
 
-// Sample medicine names for autosuggest (in a real app, this would come from an API)
+// Sample brand names for autosuggest (replace with API/DB in production)
 const medicineSuggestions = [
-  "Paracetamol", "Augmentin", "Amoxicillin", "Ibuprofen", "Omeprazole", 
-  "Cetirizine", "Loratadine", "Metformin", "Amlodipine", "Atorvastatin",
-  "Aspirin", "Vitamin D", "Calcium", "Iron", "Folic Acid"
+  // Analgesics / Antipyretics
+  "Panadol", "Panadol Extra", "Calpol", "Disprin", "Brufen", "Ponstan", "Voltaren", "Naprosyn",
+  // Antibiotics
+  "Augmentin", "Amoxil", "Klavox", "Ciproxin", "Ciplox", "Flagyl", "Zinnat", "Cefspan", "Keflex", "Levoxin", "Avelox", "Klacid", "Azomax", "Azithral",
+  // Antihistamines / Allergy
+  "Zyrtec", "Claritin", "Telfast", "Telekast", "Aerius",
+  // Gastrointestinal
+  "Losec", "Nexium", "Esso", "Motilium", "Gaviscon", "Buscopan", "ORS",
+  // Antihelmintics
+  "Zentel", "Vermox",
+  // Cardiometabolic / Chronic
+  "Norvasc", "Concor", "Loprin", "Lipitor", "Crestor", "Glucophage", "Amaryl", "Diamicron",
+  // Others common
+  "Caltrate", "Neurobion", "Evion", "Folidic",
+  "Panadol", "Panadol Extra", "Panadol CF", "Panadol Cold & Flu", "Calpol", "Disprin", "Aspirin", 
+"Brufen", "Ponstan", "Ponstan Forte", "Mefac", "Nuberol Forte", "Nuberol", "Nimcofen", 
+"Cataflam", "Voltaren", "Arinac", "Arinac Forte", "Arinac Syrup", "Arinac Tablet", 
+"Synflex", "Naprosyn", "Flex", "Myogesic", "Spasrid", "Duspatalin", "Buscopan", 
+"Spasmonal", "Spasrid Forte", "Inderal", "Atenolol", "Tenormin", "Capoten", "Envas", 
+"Cozaar", "Losar", "Ampress", "Norvasc", "Azomax", "Zithromax", "Clarithro", "Klaricid", 
+"Erythrocin", "Flagyl", "Metrogyl", "Amoxil", "Augmentin", "Hiconcil", "Klavox", "Cefspan", 
+"Suprax", "Velosef", "Keflex", "Keflor", "Zinnat", "Cefizox", "Fortum", "Maxipime", "Meronem", 
+"Tienam", "Claforan", "Rocephin", "Ceftriaxone", "Cefotaxime", "Cefixime", "Cefuroxime", 
+"Cefaclor", "Cefadroxil", "Duricef", "Roxid", "Maclar", "Tavanic", "Levoxin", "Levoflox", 
+"Oflox", "Tarivid", "Avelox", "Moxiget", "Ciproxin", "Ciprotab", "Ciproflox", "Sparaxin", 
+"Glimet", "Glucophage", "Metformin", "Amaryl", "Diamicron", "Daonil", "Insulatard", 
+"Mixtard", "Actrapid", "Novorapid", "Humulin", "Lantus", "Tresiba", "Januvia", 
+"Galvus", "Trajenta", "Jardiance", "Forxiga", "Xigduo", "Invokana", "Lipiget", 
+"Atorva", "Atorvast", "Lipitor", "Crestor", "Rosuva", "Zocor", "Simva", "Ezetrol", 
+"Omezol", "Losec", "Nexum", "Nexium", "Esomac", "Somac", "Pantoloc", "Pantosec", 
+"Rabecid", "Rabipur", "Lanzol", "Lanzor", "Maxolon", "Motilium", "Domel", "Domperidone", 
+"Zofran", "Emetil", "Primperan", "Stemetil", "Cinnarizine", "Stugeron", "Avil", 
+"Phenergan", "Telfast", "Fexet", "Claritek", "Claritin", "Loratadine", "Cetrizine", 
+"Zyrtec", "Xyzal", "Levocet", "Histaloc", "Histacin", "Deltacortril", "Prednisolone", 
+"Solu-Medrol", "Medrol", "Hydrocort", "Dexamethasone", "Decadron", "Betnesol", "Celestone", 
+"Kenacort", "Depo-Medrol", "Omnacortil", "Ventolin", "Salamol", "Asmalin", "Bricanyl", 
+"Seretide", "Symbicort", "Pulmicort", "Beclate", "Flixotide", "Singulair", "Montiget",
+"Proventil", "Ventorlin", "Deriphyllin", "Theo-Asthalin", "Theolin", "Astymin", "Neurobion", 
+"Mecobal", "Mecobalamin", "Nervin", "Cyanocobalamin", "Folic Acid", "Folvite", "Folvite Plus", 
+"Obimin", "Pregnacare", "Elevit", "Caltrate", "Osteocare", "Calcimax", "Calcium Sandoz", 
+"Vitrum", "Centrum", "Surbex Z", "Surbex T", "Surbex XT", "Surbex Plus", "Vitazet", 
+"Vidaylin", "Vidaylin M", "Vidaylin Drops", "Vidaylin Syrup", "Becosules", "Bevidox", 
+"Bevidox Forte", "Polyvit", "Polyvit Drops", "Polyvit Syrup", "Peditral", "ORS Sachets", 
+"Pedialyte", "Rehydron", "Hydralyte", "Glytin", "ORS Loly", "ORS Plus", "ORS Hydral", 
+"ORS Rehydrate", "ORS Max", "ORS Solution", "ORS Herbal", "ORS Apple", "ORS Orange", 
+"ORS Lemon", "ORS Strawberry", "ORS Kids", "ORS Lite", "ORS Active", "ORS Glucose", 
+"ORS Rapid", "ORS Energy", "ORS Balanced", "ORS Pro", "ORS Relief", "ORS Restore", 
+"ORS Vital", "ORS Electrolyte", "ORS Hydrate", "ORS Strong", "ORS Boost", "ORS Mix", 
+"ORS Vita", "ORS Mineral", "ORS Hydromax", "ORS Fast", "ORS Cool", "ORS Standard", 
+"ORS Natural", "ORS Fresh", "ORS Smart", "ORS Pack", "ORS Tabs", "ORS Powder", 
+"ORS Sachet Lemon", "ORS Sachet Orange", "ORS Sachet Cola", "ORS Sachet Apple", 
+"ORS Sachet Strawberry", "ORS Sachet Mango", "ORS Sachet Peach", "ORS Sachet Pineapple", 
+"ORS Sachet Grape", "ORS Sachet Mixed Fruit", "ORS Sachet Banana", "ORS Sachet Cherry", 
+"ORS Sachet Melon", "ORS Sachet Coconut", "ORS Sachet Blueberry", "ORS Sachet Pomegranate", 
+"ORS Sachet Watermelon", "ORS Sachet Citrus", "ORS Sachet Berry", "ORS Sachet Fruit Punch", 
+"ORS Sachet Green Apple", "ORS Sachet Lemon Lime", "ORS Sachet Orange Mango", "ORS Sachet Tropical", 
+"ORS Sachet Guava", "ORS Sachet Passion Fruit", "ORS Sachet Kiwi", "ORS Sachet Lychee", 
+"ORS Sachet Dragon Fruit", "ORS Sachet Mixed Berries", "ORS Sachet Raspberry", "ORS Sachet Blackcurrant", 
+"ORS Sachet Energy", "ORS Sachet Electro Plus", "ORS Sachet Sport", "ORS Sachet Kidz", "ORS Sachet Junior", 
+"ORS Sachet Senior", "ORS Sachet Women", "ORS Sachet Men", "ORS Sachet Active Plus", "ORS Sachet Lite", 
+"ORS Sachet Zero", "ORS Sachet Max", "ORS Sachet Pro", "ORS Sachet Essential", "ORS Sachet Strong", 
+"ORS Sachet Vital", "ORS Sachet Restore", "ORS Sachet Hydrate", "ORS Sachet Relief", "ORS Sachet Rebalance", 
+"ORS Sachet Energy Max", "ORS Sachet Hydration", "ORS Sachet Wellness", "ORS Sachet Care", "ORS Sachet Immunity",
+"Augmentin", "Amoxil", "Klavox", "Velosef", "Suprax", "Zinnat", "Rocephin", "Cefspan", 
+"Fortum", "Meronem", "Tienam", "Claforan", "Flagyl", "Metrogyl", "Tinidazole", 
+"Azomax", "Zithromax", "Klaricid", "Erythrocin", "Tavanic", "Levoxin", "Ciproxin", 
+"Tarivid", "Moxiget", "Roxid", "Doxy", "Vibramycin", "Minocin", "Rifadin", "AKT-4", 
+"Ethambutol", "PZA", "Isoniazid", "XDR-TB Kit", "Sofosbuvir", "Epclusa", "Harvoni", 
+"Velpatasvir", "Ribavirin", "Tenofovir", "Lamivudine", "Efavirenz", "Nevirapine", 
+"Kaletra", "Darunavir", "Raltegravir", "Dolutegravir", "Remdesivir", "Hydroxychloroquine", 
+"Plaquenil", "Quinine", "Malarone", "Coartem", "Fansidar", "Primaquine", "Chloroquine", 
+"Panadol", "Disprin", "Brufen", "Ponstan", "Cataflam", "Voltaren", "Naproxen", 
+"Synflex", "Nuberol Forte", "Myogesic", "Flex", "Tramal", "Ultracet", "Dolgit", 
+"Inderal", "Tenormin", "Capoten", "Envas", "Cozaar", "Losar", "Ampress", "Norvasc", 
+"Amlocard", "Concor", "Cardura", "Aldactone", "Lasix", "Frusemide", "Zestril", 
+"Prinivil", "Lipiget", "Atorva", "Lipitor", "Crestor", "Rosuva", "Zocor", "Simva", 
+"Ezetrol", "Glucophage", "Amaryl", "Diamicron", "Daonil", "Januvia", "Galvus", 
+"Trajenta", "Forxiga", "Jardiance", "Xigduo", "Insulatard", "Mixtard", "Actrapid", 
+"Novorapid", "Humulin", "Lantus", "Tresiba", "Omezol", "Losec", "Nexium", "Esomac", 
+"Somac", "Pantoloc", "Pantosec", "Rabecid", "Lanzol", "Maxolon", "Motilium", 
+"Domel", "Zofran", "Stemetil", "Cinnarizine", "Stugeron", "Avil", "Phenergan", 
+"Telfast", "Fexet", "Claritek", "Claritin", "Loratadine", "Zyrtec", "Xyzal", "Histaloc", 
+"Deltacortril", "Prednisolone", "Medrol", "Decadron", "Betnesol", "Celestone", 
+"Depo-Medrol", "Ventolin", "Salamol", "Bricanyl", "Seretide", "Symbicort", "Pulmicort", 
+"Beclate", "Flixotide", "Singulair", "Montiget", "Astymin", "Neurobion", "Mecobal", 
+"Surbex Z", "Surbex T", "Surbex XT", "Centrum", "Vitrum", "Osteocare", "Caltrate", 
+"Calcimax", "Folvite", "Obimin", "Pregnacare", "Elevit", "Vitazet", "Vidaylin", 
+"Becosules", "Bevidox", "Polyvit", "ORS Sachets", "Pedialyte", "Hydralyte", 
+"ORS Plus", "ORS Kids", "ORS Pro", "ORS Vital", "ORS Restore", "ORS Hydrate", 
+"ORS Strong", "ORS Boost", "ORS Tabs", "ORS Powder",
+"Augmentin DS", "Klaricid XL", "Zithromax Suspension", "Amoxil Syrup", "Velosef Syrup", 
+"Cefspan DS", "Suprax Suspension", "Zinnat Syrup", "Rocephin Injection", "Claforan Injection", 
+"Fortum Injection", "Meronem Injection", "Flagyl Suspension", "Metrogyl Infusion", "Tinidazole Tablet", 
+"Doxycap", "Vibramycin Syrup", "Minocin Capsule", "Rifadin Capsule", "Ethambutol Tablet", 
+"PZA Tablet", "Isoniazid Tablet", "AKT Kit", "Coartem DS", "Fansidar Tablet", 
+"Primaquine Tablet", "Chloroquine Tablet", "Hydroxychloroquine Tablet", "Remdesivir Injection", 
+"Sofosbuvir Tablet", "Epclusa Tablet", "Harvoni Tablet", "Velpatasvir Tablet", "Tenofovir Tablet", 
+"Lamivudine Tablet", "Efavirenz Tablet", "Nevirapine Tablet", "Kaletra Tablet", "Darunavir Tablet", 
+"Raltegravir Tablet", "Dolutegravir Tablet", "Panadol CF", "Panadol Night", "Panadol Children", 
+"Disprin Regular", "Disprin CV", "Brufen Syrup", "Ponstan Forte Suspension", "Cataflam D", 
+"Voltaren SR", "Synflex DS", "Nuberol Injection", "Flex Capsule", "Tramal Injection", 
+"Ultracet Tablet", "Dolgit Gel", "Inderal LA", "Tenormin Tablet", "Capoten Tablet", 
+"Envas Tablet", "Cozaar DS", "Losar H", "Ampress Plus", "Norvasc 5mg", "Amlocard 10mg", 
+"Concor AM", "Cardura XL", "Aldactone 25", "Lasix Injection", "Zestril Tablet", 
+"Prinivil Tablet", "Lipiget 20mg", "Atorva 40mg", "Lipitor 10mg", "Crestor 20mg", 
+"Rosuva 10mg", "Zocor 20mg", "Simva 10mg", "Ezetrol Tablet", "Glucophage XR", 
+"Amaryl M", "Diamicron MR", "Daonil Tablet", "Januvia 100", "Galvus Met", "Trajenta Duo", 
+"Forxiga Tablet", "Jardiance 25", "Xigduo Tablet", "Insulatard Flexpen", "Mixtard Flexpen", 
+"Actrapid Flexpen", "Novorapid Flexpen", "Humulin R", "Lantus Solostar", "Tresiba Flexpen", 
+"Omezol Capsule", "Losec MUPS", "Nexium Sachet", "Esomac Tablet", "Somac IV", 
+"Pantoloc Tablet", "Pantosec Capsule", "Rabecid Capsule", "Lanzol Tablet", 
+"Maxolon Injection", "Motilium Suspension", "Domel Suspension", "Zofran IV", 
+"Stemetil Injection", "Cinnarizine Tablet", "Stugeron Forte", "Avil Injection", 
+"Phenergan Syrup", "Telfast 120mg", "Fexet 180mg", "Claritek Syrup", "Claritin Reditabs", 
+"Loratadine Syrup", "Zyrtec Syrup", "Xyzal Drops", "Histaloc Syrup", "Deltacortril 5mg", 
+"Prednisolone Syrup", "Medrol Dose Pack", "Decadron Injection", "Betnesol Injection", 
+"Celestone Chronodose", "Depo-Medrol Injection", "Ventolin Inhaler", "Salamol Inhaler", 
+"Bricanyl Syrup", "Seretide Accuhaler", "Symbicort Turbuhaler", "Pulmicort Respules", 
+"Beclate Inhaler", "Flixotide Inhaler", "Singulair Tablet", "Montiget Chewable", 
+"Astymin Injection", "Neurobion Injection", "Mecobal Capsules", "Surbex Gold", 
+"Surbex Zinc", "Surbex Iron", "Centrum Silver", "Centrum Men", "Centrum Women", 
+"Vitrum Kids", "Osteocare Syrup", "Caltrate D", "Calcimax Syrup", "Folvite Forte", 
+"Obimin Plus", "Pregnacare Max", "Elevit Women", "Vitazet Forte", "Vidaylin M Syrup", 
+"Becosules Z", "Bevidox Syrup", "Polyvit Drops", "ORS Sachets Orange", 
+"Pedialyte Apple", "Hydralyte Sachets", "ORS Kids Orange", "ORS Pro Lemon", 
+"ORS Restore Sachets", "ORS Hydrate Pack", "ORS Strong Sachets", "ORS Tabs Orange", 
+"ORS Powder Lemon", "ORS Vita Sachets",
+
+
+
+
 ];
 
 const BuyMedicine = () => {
@@ -37,6 +166,8 @@ const BuyMedicine = () => {
   const navigate = useNavigate();
   const { customer } = useAuth();
   const [submitErrors, setSubmitErrors] = useState([]);
+  
+  
 
   React.useEffect(() => {
     setTimeout(() => setFormVisible(true), 100);
@@ -68,9 +199,15 @@ const BuyMedicine = () => {
     handleCurrentMedicineChange("name", value);
     
     if (value.length > 1) {
-      const filtered = medicineSuggestions.filter(med => 
-        med.toLowerCase().includes(value.toLowerCase())
-      );
+      const q = value.toLowerCase();
+      const starts = [];
+      const contains = [];
+      medicineSuggestions.forEach(med => {
+        const m = med.toLowerCase();
+        if (m.startsWith(q)) starts.push(med);
+        else if (m.includes(q)) contains.push(med);
+      });
+      const filtered = [...new Set([...starts, ...contains])].slice(0, 10);
       setSuggestions(filtered);
       setShowSuggestions(true);
     } else {
@@ -82,6 +219,8 @@ const BuyMedicine = () => {
     handleCurrentMedicineChange("name", suggestion);
     setShowSuggestions(false);
   };
+
+  // AI prescription feature removed
 
   const getSubmitErrors = () => {
     const errors = [];
@@ -231,6 +370,8 @@ const BuyMedicine = () => {
                         </ul>
                       </div>
                               )}
+
+                    
                             </div>
                 </div>
               </div>
