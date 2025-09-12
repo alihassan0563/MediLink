@@ -21,16 +21,15 @@ export default function ManageOrders() {
 
   useEffect(() => { load(); }, []);
 
-  const update = async (id, status) => {
-    setError('');
+  const remove = async (id) => {
+    if (!confirm('Reject this order request? This will notify both customer and pharmacy.')) return;
     const res = await fetch(`http://localhost:5000/api/admin/orders/${id}`, {
-      method: 'PATCH',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status })
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await res.json();
-    if (!res.ok) { setError(data.message || 'Update failed'); return; }
-    setItems((prev) => prev.map((o) => (o._id === id ? data : o)));
+    if (!res.ok) { setError(data.message || 'Action failed'); return; }
+    setItems((prev) => prev.map((o) => (o._id === id ? data.order : o)));
   };
 
   return (
@@ -58,10 +57,9 @@ export default function ManageOrders() {
               <td style={td}>{o.customer ? o.customer.email : '-'}</td>
               <td style={td}>{(o.pharmacyNames || []).join(', ')}</td>
               <td style={td}>{o.acceptedBy ? o.acceptedBy.pharmacyName : '-'}</td>
-              <td style={td}><Badge value={o.status} /></td>
+              <td style={td}><Badge value={o.status} /> {o.statusMessage ? <span style={{ marginLeft: 8, color: '#6b7280' }}>({o.statusMessage})</span> : null}</td>
               <td style={td}>
-                <button onClick={() => update(o._id, 'completed')} style={{ ...btn, marginRight: 8 }}>Mark Completed</button>
-                <button onClick={() => update(o._id, 'cancelled')} style={btnLight}>Cancel</button>
+                <button onClick={() => remove(o._id)} style={btnDanger}>Delete (Reject)</button>
               </td>
             </tr>
           ))}
@@ -82,5 +80,6 @@ const td = { padding: 12, borderBottom: '1px solid #f3f4f6' };
 const btn = { padding: '6px 10px', background: '#111827', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' };
 const btnLight = { padding: '6px 10px', background: '#f3f4f6', color: '#111827', border: '1px solid #e5e7eb', borderRadius: 6, cursor: 'pointer' };
 const navBtn = { display: 'inline-block', padding: '8px 12px', border: '1px solid #e5e7eb', borderRadius: 8, textDecoration: 'none', color: '#111827', background: '#f9fafb' };
+const btnDanger = { padding: '6px 10px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' };
 
 

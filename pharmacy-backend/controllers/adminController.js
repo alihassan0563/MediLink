@@ -88,6 +88,17 @@ exports.updatePharmacyStatus = async (req, res) => {
   }
 };
 
+exports.deletePharmacy = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Pharmacy.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ message: 'Pharmacy not found' });
+    res.json({ message: 'Pharmacy deleted' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 exports.listCustomers = async (req, res) => {
   try {
     const list = await Customer.find({}).select('-password');
@@ -110,6 +121,17 @@ exports.updateCustomerActive = async (req, res) => {
   }
 };
 
+exports.deleteCustomer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Customer.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ message: 'Customer not found' });
+    res.json({ message: 'Customer deleted' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 exports.listOrders = async (req, res) => {
   try {
     const list = await Request.find({}).populate('customer', 'email phone').populate('acceptedBy', 'pharmacyName');
@@ -122,13 +144,28 @@ exports.listOrders = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body; // 'completed' | 'cancelled'
-    if (!['completed', 'cancelled'].includes(status)) {
+    const { status, statusMessage } = req.body; // allow admin message
+    if (!['completed', 'cancelled', 'rejected'].includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
     }
-    const doc = await Request.findByIdAndUpdate(id, { status }, { new: true });
+    const doc = await Request.findByIdAndUpdate(id, { status, statusMessage }, { new: true });
     if (!doc) return res.status(404).json({ message: 'Order not found' });
     res.json(doc);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.deleteOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await Request.findByIdAndUpdate(
+      id,
+      { status: 'rejected', statusMessage: 'Rejected by admin' },
+      { new: true }
+    );
+    if (!doc) return res.status(404).json({ message: 'Order not found' });
+    res.json({ message: 'Order rejected by admin', order: doc });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

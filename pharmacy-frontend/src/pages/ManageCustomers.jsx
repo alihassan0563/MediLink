@@ -21,16 +21,15 @@ export default function ManageCustomers() {
 
   useEffect(() => { load(); }, []);
 
-  const update = async (id, isActive) => {
-    setError('');
+  const remove = async (id) => {
+    if (!confirm('Delete this customer? This action cannot be undone.')) return;
     const res = await fetch(`http://localhost:5000/api/admin/customers/${id}`, {
-      method: 'PATCH',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isActive })
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await res.json();
-    if (!res.ok) { setError(data.message || 'Update failed'); return; }
-    setItems((prev) => prev.map((c) => (c._id === id ? data : c)));
+    if (!res.ok) { setError(data.message || 'Delete failed'); return; }
+    setItems((prev) => prev.filter((c) => c._id !== id));
   };
 
   return (
@@ -56,7 +55,7 @@ export default function ManageCustomers() {
               <td style={td}>{c.phone}</td>
               <td style={td}>{c.isActive ? 'Yes' : 'No'}</td>
               <td style={td}>
-                <button onClick={() => update(c._id, !c.isActive)} style={btnSecondary}>{c.isActive ? 'Deactivate' : 'Activate'}</button>
+                <button onClick={() => remove(c._id)} style={btnDanger}>Delete</button>
               </td>
             </tr>
           ))}
@@ -69,6 +68,7 @@ export default function ManageCustomers() {
 const th = { textAlign: 'left', padding: 12, background: '#f9fafb', borderBottom: '1px solid #e5e7eb' };
 const td = { padding: 12, borderBottom: '1px solid #f3f4f6' };
 const btnSecondary = { padding: '6px 10px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' };
+const btnDanger = { padding: '6px 10px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' };
 const navBtn = { display: 'inline-block', padding: '8px 12px', border: '1px solid #e5e7eb', borderRadius: 8, textDecoration: 'none', color: '#111827', background: '#f9fafb' };
 
 

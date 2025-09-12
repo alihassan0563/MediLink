@@ -34,6 +34,17 @@ export default function ManagePharmacies() {
     setItems((prev) => prev.map((p) => (p._id === id ? data : p)));
   };
 
+  const remove = async (id) => {
+    if (!confirm('Delete this pharmacy? This action cannot be undone.')) return;
+    const res = await fetch(`http://localhost:5000/api/admin/pharmacies/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (!res.ok) { setError(data.message || 'Delete failed'); return; }
+    setItems((prev) => prev.filter((p) => p._id !== id));
+  };
+
   return (
     <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -59,9 +70,7 @@ export default function ManagePharmacies() {
               <td style={td}><Badge value={p.status} /></td>
               <td style={td}>{p.isActive ? 'Yes' : 'No'}</td>
               <td style={td}>
-                <button onClick={() => update(p._id, { status: 'approved' })} style={{ ...btn, marginRight: 8 }}>Approve</button>
-                <button onClick={() => update(p._id, { status: 'rejected' })} style={{ ...btnLight, marginRight: 8 }}>Reject</button>
-                <button onClick={() => update(p._id, { isActive: !p.isActive })} style={btnSecondary}>{p.isActive ? 'Deactivate' : 'Activate'}</button>
+                <button onClick={() => remove(p._id)} style={btnDanger}>Delete</button>
               </td>
             </tr>
           ))}
@@ -82,6 +91,7 @@ const td = { padding: 12, borderBottom: '1px solid #f3f4f6' };
 const btn = { padding: '6px 10px', background: '#111827', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' };
 const btnLight = { padding: '6px 10px', background: '#f3f4f6', color: '#111827', border: '1px solid #e5e7eb', borderRadius: 6, cursor: 'pointer' };
 const btnSecondary = { padding: '6px 10px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' };
+const btnDanger = { padding: '6px 10px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' };
 const navBtn = { display: 'inline-block', padding: '8px 12px', border: '1px solid #e5e7eb', borderRadius: 8, textDecoration: 'none', color: '#111827', background: '#f9fafb' };
 
 
