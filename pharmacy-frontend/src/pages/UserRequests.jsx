@@ -39,8 +39,8 @@ const UserRequests = () => {
     ])
     .then(responses => Promise.all(responses.map(res => res.json())))
     .then(([requestsData, billsData]) => {
-      setRequests(requestsData);
-      setBills(billsData);
+      setRequests(Array.isArray(requestsData) ? requestsData : []);
+      setBills(Array.isArray(billsData) ? billsData : []);
       setLoading(false);
     })
     .catch((error) => {
@@ -50,22 +50,27 @@ const UserRequests = () => {
   }, [customer, authLoading]);
 
   const getPharmacyResponses = (request) => {
-    return bills.filter(bill => {
-      const billRequestId = typeof bill.request === 'string' ? bill.request : bill.request._id;
-      const requestId = typeof request._id === 'string' ? request._id : request._id.toString();
-      return billRequestId === requestId;
-    }).map(bill => ({
-      pharmacyId: bill.pharmacy._id,
-      pharmacyName: bill.pharmacy.pharmacyName,
-      pharmacy: bill.pharmacy,
-      status: bill.status,
-      price: bill.totalAmount,
-      deliveryCharges: bill.deliveryCharges,
-      deliveryTime: bill.deliveryTime,
-      medicines: bill.medicines,
-      billId: bill._id,
-      createdAt: bill.createdAt
-    }));
+    if (!request || !request._id) return [];
+    const requestId = typeof request._id === 'string' ? request._id : String(request._id);
+    return bills
+      .filter((bill) => {
+        if (!bill) return false;
+        const bReq = bill.request;
+        const billRequestId = typeof bReq === 'string' ? bReq : (bReq && (bReq._id || bReq.id));
+        return billRequestId && String(billRequestId) === requestId;
+      })
+      .map((bill) => ({
+        pharmacyId: bill?.pharmacy?._id,
+        pharmacyName: bill?.pharmacy?.pharmacyName || 'Pharmacy',
+        pharmacy: bill?.pharmacy,
+        status: bill?.status,
+        price: bill?.totalAmount,
+        deliveryCharges: bill?.deliveryCharges,
+        deliveryTime: bill?.deliveryTime,
+        medicines: bill?.medicines || [],
+        billId: bill?._id,
+        createdAt: bill?.createdAt,
+      }));
   };
 
   const handleViewPharmacy = (requestId, pharmacyBill) => {
@@ -254,9 +259,18 @@ const UserRequests = () => {
         >
           <h2 className="buy-medicine-title">Pharmacy Offer Details</h2>
           {/* Chrome-style tabs for pharmacies */}
-          {selectedRequestId && !showMedicineList && getPharmacyResponses(requests.find(r => r._id === selectedRequestId)).length > 0 && (
+          {(() => {
+            if (!selectedRequestId || showMedicineList) return false;
+            const selectedReq = Array.isArray(requests) ? requests.find((r) => r._id === selectedRequestId) : null;
+            const responses = getPharmacyResponses(selectedReq);
+            return responses.length > 0;
+          })() && (
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 0, marginBottom: 24, borderBottom: '2.5px solid #e0e0e0', minHeight: 48 }}>
-              {getPharmacyResponses(requests.find(r => r._id === selectedRequestId)).map((pharmacyBill, idx) => {
+              {(() => {
+                const selectedReq = Array.isArray(requests) ? requests.find((r) => r._id === selectedRequestId) : null;
+                const responses = getPharmacyResponses(selectedReq);
+                return responses;
+              })().map((pharmacyBill, idx) => {
                 const isActive = selectedPharmacyBill && selectedPharmacyBill.billId === pharmacyBill.billId;
                 return (
                   <div
@@ -307,7 +321,7 @@ const UserRequests = () => {
                   </thead>
                   <tbody>
                     {(() => {
-                      const req = requests.find(r => r._id === selectedRequestId);
+                      const req = Array.isArray(requests) ? requests.find(r => r._id === selectedRequestId) : null;
                       return req && req.medicines ? req.medicines.map((med, medIndex) => (
                         <tr key={medIndex}>
                           <td>{med.name}</td>
@@ -326,7 +340,8 @@ const UserRequests = () => {
           ) : (
             (() => {
               // Find if any offer is accepted for this request
-              const pharmacyResponses = getPharmacyResponses(requests.find(r => r._id === selectedRequestId));
+              const selectedReq = Array.isArray(requests) ? requests.find((r) => r._id === selectedRequestId) : null;
+              const pharmacyResponses = getPharmacyResponses(selectedReq);
               const acceptedBill = pharmacyResponses.find(bill => bill.status === 'accepted' || bill.status === 'completed');
               const isRejected = selectedPharmacyBill && selectedPharmacyBill.status === 'rejected';
               const isAccepted = acceptedBill && acceptedBill.billId === selectedPharmacyBill.billId;
