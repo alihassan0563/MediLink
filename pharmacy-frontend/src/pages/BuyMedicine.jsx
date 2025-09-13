@@ -1,10 +1,9 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import Header from "../component/Header";
+import PreviousMedicineLists from "../component/PreviousMedicineLists";
 import "./BuyMedicine.css";
- 
 
 const initialMedicine = { 
   name: "", 
@@ -22,7 +21,7 @@ const medicineSuggestions = [
   // Analgesics / Antipyretics
   "Panadol", "Panadol Extra", "Calpol", "Disprin", "Brufen", "Ponstan", "Voltaren", "Naprosyn",
   // Antibiotics
-  "Augmentin", "Amoxil", "Klavox", "Ciproxin", "Ciplox", "Flagyl", "Zinnat", "Cefspan", "Keflex", "Levoxin", "Avelox", "Klacid", "Azomax", "Azithral",
+  "Augmentin", "Amoxil", "Klavox", "Ciproxin", "Ciprotab", "Flagyl", "Zinnat", "Cefspan", "Keflex", "Levoxin", "Avelox", "Moxiget", "Roxid", "Doxy", "Vibramycin", "Minocin", "Rifadin", "AKT-4", 
   // Antihistamines / Allergy
   "Zyrtec", "Claritin", "Telfast", "Telekast", "Aerius",
   // Gastrointestinal
@@ -30,7 +29,7 @@ const medicineSuggestions = [
   // Antihelmintics
   "Zentel", "Vermox",
   // Cardiometabolic / Chronic
-  "Norvasc", "Concor", "Loprin", "Lipitor", "Crestor", "Glucophage", "Amaryl", "Diamicron",
+  "Norvasc", "Concor", "Loprin", "Lipitor", "Crestor", "Rosuva", "Zocor", "Simva", "Ezetrol", "Glucophage", "Amaryl", "Diamicron", "Daonil", "Januvia", "Galvus", "Trajenta", "Forxiga", "Jardiance", "Xigduo", "Invokana", "Lipiget", 
   // Others common
   "Caltrate", "Neurobion", "Evion", "Folidic",
   "Panadol", "Panadol Extra", "Panadol CF", "Panadol Cold & Flu", "Calpol", "Disprin", "Aspirin", 
@@ -146,10 +145,6 @@ const medicineSuggestions = [
 "Pedialyte Apple", "Hydralyte Sachets", "ORS Kids Orange", "ORS Pro Lemon", 
 "ORS Restore Sachets", "ORS Hydrate Pack", "ORS Strong Sachets", "ORS Tabs Orange", 
 "ORS Powder Lemon", "ORS Vita Sachets",
-
-
-
-
 ];
 
 const BuyMedicine = () => {
@@ -166,8 +161,7 @@ const BuyMedicine = () => {
   const navigate = useNavigate();
   const { customer } = useAuth();
   const [submitErrors, setSubmitErrors] = useState([]);
-  
-  
+  const [showPrevLists, setShowPrevLists] = useState(false);
 
   React.useEffect(() => {
     setTimeout(() => setFormVisible(true), 100);
@@ -254,7 +248,17 @@ const BuyMedicine = () => {
               {/* Left Column - Medicine Selection */}
               <div className="left-column">
                 <div className="form-section">
-                  <label className="form-label">Medicines List</label>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <label className="form-label">Medicines List</label>
+                    <button
+                      type="button"
+                      className="add-btn"
+                      style={{ background: '#2ca7a0' }}
+                      onClick={() => setShowPrevLists(true)}
+                    >
+                      Previous Medicine List
+                    </button>
+                  </div>
                   <div className="medicine-card">
                       <div className="medicine-row">
                         <div className="medicine-name-container">
@@ -448,7 +452,7 @@ const BuyMedicine = () => {
             <button
               className="submit-btn"
               type="button"
-              onClick={() => {
+              onClick={async () => {
                 const errors = getSubmitErrors();
                 if (errors.length > 0) {
                   setSubmitErrors(errors);
@@ -462,16 +466,36 @@ const BuyMedicine = () => {
                   });
                   return;
                 }
+                try {
+                  const token = localStorage.getItem('customer_token');
+                  if (token && Array.isArray(medicines) && medicines.length > 0) {
+                    const name = medicines[0]?.name ? `${medicines[0].name} and ${medicines.length - 1} more` : '';
+                    fetch('http://localhost:5000/api/customer/saved-lists', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                      },
+                      body: JSON.stringify({ medicines, name })
+                    }).catch(() => {});
+                  }
+                } catch (_) {}
                 navigate("/select-pharmacy", { state: orderState });
               }}
             >
               Select Pharmacy
             </button>
           </form>
+          {showPrevLists && (
+            <PreviousMedicineLists
+              onClose={() => setShowPrevLists(false)}
+              onUseList={(list) => { setMedicines(list || []); setShowPrevLists(false); }}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default BuyMedicine; 
+export default BuyMedicine;

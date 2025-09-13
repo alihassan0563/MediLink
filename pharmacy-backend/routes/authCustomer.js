@@ -6,6 +6,7 @@ const auth = require('../middleware/auth');
 const Customer = require('../models/Customer');
 const Request = require('../models/Request');
 const Bill = require('../models/Bill');
+const SavedList = require('../models/SavedList');
 
 router.post('/signup', signup);
 router.post('/login', login);
@@ -255,4 +256,71 @@ router.post('/accept-bill/:billId', auth('customer'), async (req, res) => {
   }
 });
 
-module.exports = router; 
+// Get saved medicine lists for the logged-in customer
+router.get('/saved-lists', auth('customer'), async (req, res) => {
+  try {
+    const lists = await SavedList.find({ customer: req.user.id }).sort({ createdAt: -1 });
+    res.json(lists);
+  } catch (err) {
+    console.error('Error fetching saved lists:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// Create/save a new medicine list for the logged-in customer
+router.post('/saved-lists', auth('customer'), async (req, res) => {
+  try {
+    const { medicines, name } = req.body;
+    if (!Array.isArray(medicines) || medicines.length === 0) {
+      return res.status(400).json({ message: 'Medicines array is required' });
+    }
+
+    const normalized = medicines.map(m => ({
+      name: (m && m.name) ? m.name : '',
+      type: (m && m.type) ? m.type : '',
+      strength: (m && m.strength) ? m.strength : '',
+      quantity: Number(m && m.quantity) > 0 ? Number(m.quantity) : 1
+    }));
+
+    const doc = new SavedList({
+      customer: req.user.id,
+      name: name || '',
+      medicines: normalized
+    });
+    await doc.save();
+    res.status(201).json(doc);
+  } catch (err) {
+    console.error('Error saving list:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// Delete a saved medicine list (owned by logged-in customer)
+router.delete('/saved-lists/:id', auth('customer'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: 'List id is required' });
+    }
+
+    console.log('[DELETE /api/customer/saved-lists/:id]', {
+      id,
+      customer: req.user.id
+    });
+
+    const deleted = await SavedList.findOneAndDelete({ _id: id, customer: req.user.id });
+    if (!deleted) {
+      return res.status(404).json({ message: 'Saved list not found' });
+    }
+
+    res.json({ message: 'Saved list deleted successfully', id });
+  } catch (err) {
+    console.error('Error deleting saved list:', err);
+    if (err.name === 'CastError') {
+      return res.status(400).json({ message: 'Invalid list id format' });
+    }
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+module.exports = router;
