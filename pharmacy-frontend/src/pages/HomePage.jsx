@@ -4,6 +4,8 @@ import "./HomePage.css";
 import { useAuth } from "../AuthContext";
 import Header from "../component/Header";
 import Hero from "../component/Hero";
+import Team from "../component/Team";
+import TrustedPharmacies from "../component/TrustedPharmacies";
 
 // Icon URLs for sections
 const icons = {
@@ -25,26 +27,75 @@ const icons = {
 
 const faqs = [
   {
-    icon: 'pill',
+    icon: "pill",
     question: "How do I order medicines?",
-    answer: "Start by selecting your city so we can show pharmacies that serve your area. Next, add the medicines you need (tablet, syrup, or capsule) and specify quantities or upload a prescription if required. Submit your request and nearby pharmacies will respond with prices, stock availability, and estimated delivery times. You can compare offers side‑by‑side, chat or ask for clarification if needed, and then confirm the pharmacy that best fits your budget and timing. Once confirmed, you'll receive order updates and a delivery ETA.",
+    answer:
+      "Start by selecting your city so we can show pharmacies that serve your area. Next, add the medicines you need (tablet, syrup, or capsule) and specify quantities or upload a prescription if required. Submit your request and nearby pharmacies will respond with prices, stock availability, and estimated delivery times. You can compare offers side‑by‑side, chat or ask for clarification if needed, and then confirm the pharmacy that best fits your budget and timing. Once confirmed, you'll receive order updates and a delivery ETA.",
   },
   {
-    icon: 'secure',
+    icon: "secure",
     question: "Is my information secure?",
-    answer: "Yes. We use industry‑standard encryption (HTTPS/TLS) for all data in transit and apply strict access controls to protect your profile, prescription details, and order history. Only verified pharmacies participating in your request can view the minimum information required to provide a quote. We never sell your data, and you can delete your account or request data export at any time via settings.",
+    answer:
+      "Yes. We use industry‑standard encryption (HTTPS/TLS) for all data in transit and apply strict access controls to protect your profile, prescription details, and order history. Only verified pharmacies participating in your request can view the minimum information required to provide a quote. We never sell your data, and you can delete your account or request data export at any time via settings.",
   },
   {
-    icon: 'truck',
+    icon: "truck",
     question: "How fast is delivery?",
-    answer: "Most orders are fulfilled within a few hours on the same day, depending on stock and your location. Each pharmacy includes an estimated delivery window in its offer, along with any delivery fee. After you confirm an order, you'll see real‑time status updates and can contact the pharmacy or rider if needed. For urgent needs, look for offers marked 'express' with faster delivery slots.",
+    answer:
+      "Most orders are fulfilled within a few hours on the same day, depending on stock and your location. Each pharmacy includes an estimated delivery window in its offer, along with any delivery fee. After you confirm an order, you'll see real‑time status updates and can contact the pharmacy or rider if needed. For urgent needs, look for offers marked 'express' with faster delivery slots.",
   },
 ];
 
-const team = [
-  { name: "Arman Ejaz", role: "Backend & Database Developer", img: "/Arman.jpg" },
-  { name: "Ali Hassan", role: "Frontend Developer", img: "/ali.jpg" },
-  { name: "Sikandar Aftab", role: "Market Research & Analyst", img: "/sikander.jpeg" },
+const howITWork = [
+  {
+    src: "/create%20medicine%20logo.svg",
+    title: "Create Medicine List",
+    alt: "Create Medicine List",
+    step: "1",
+    desc: "Add tablets, syrups, and capsules to your list.",
+  },
+  {
+    src: "/ocation%20logo.svg",
+    title: "Select City & Pharmacies",
+    alt: "Select City & Pharmacies",
+    step: "2",
+    desc: "Choose your city and nearby trusted pharmacies.",
+  },
+  {
+    src: "/bid%20logo.svg",
+    title: "Receive Bids",
+    alt: "Receive Bids",
+    step: "3",
+    desc: "Compare offers with price and delivery time.",
+  },
+  {
+    src: "/delivery%20icon.svg",
+    title: "Confirm Order & Delivery",
+    alt: "Confirm Order & Delivery",
+    step: "4",
+    desc: "Select a pharmacy, confirm, and track delivery.",
+  },
+];
+
+const features = [
+  {
+    src: "/price%20compare%20logo.svg",
+    title: "Price Comparison",
+    alt: "Price Comparison",
+    desc: "Compare medicine prices across multiple pharmacies to get the best deal.",
+  },
+  {
+    src: "/tick%20logo.svg",
+    title: "Real-time Availability",
+    alt: "Real-time Availability",
+    desc: "Check instant availability of medicines across verified pharmacies.",
+  },
+  {
+    src: icons.secure,
+    title: "Secure Orders",
+    alt: "Secure Orders",
+    desc: "Place safe and secure medicine orders with end-to-end protection.",
+  },
 ];
 
 const HomePage = () => {
@@ -52,7 +103,7 @@ const HomePage = () => {
   const { customer, pharmacy } = useAuth();
 
   return (
-    <div className="homepage-container">
+    <div className="homepage-container ">
       {/* Header */}
       <Header />
       {/* Site-wide Reusable Hero */}
@@ -71,180 +122,107 @@ const HomePage = () => {
           "Trusted local pharmacies",
           "Fast delivery options",
         ]}
-        ctaPrimary={pharmacy ? { label: "Your Dashboard", to: "/pharmacy-dashboard" } : { label: "Buy Medicines", to: "/buy-medicine" }}
-        ctaSecondary={pharmacy ? null : (!customer ? { label: "Pharmacy Login/Signup", to: "/pharmacy-auth" } : { label: "User Requests", to: "/user-requests" })}
+        ctaPrimary={
+          pharmacy
+            ? { label: "Your Dashboard", to: "/pharmacy-dashboard" }
+            : { label: "Buy Medicines", to: "/buy-medicine" }
+        }
+        ctaSecondary={
+          pharmacy
+            ? null
+            : !customer
+              ? { label: "Pharmacy Login/Signup", to: "/pharmacy-auth" }
+              : { label: "User Requests", to: "/user-requests" }
+        }
       />
 
       {/* How It Works - Modern 4-step timeline */}
-      <section className="howitworks full-width-section" id="how-it-works">
+      <section className="howitworks full-width-section " id="how-it-works">
         <div className="hiw-inner">
           <h2 className="hiw-title">How It Works</h2>
           <div className="hiw-timeline">
+            {howITWork.map((item) => {
+              return (
+                <div className="hiw-step">
+                  <div className="hiw-icon">
+                    <img src={item.src} alt={item.alt} />
+                  </div>
+                  <span className="hiw-number">{item.step}</span>
+                  <h3 className="hiw-heading">{item.title}</h3>
+                  <p className="hiw-text">{item.desc}</p>
+                </div>
+              );
+            })}
             {/* Step 1 */}
-            <div className="hiw-step">
-              <div className="hiw-icon">
-                <img src="/create%20medicine%20logo.svg" alt="Create Medicine List" />
-              </div>
-              <span className="hiw-number">1</span>
-              <h3 className="hiw-heading">Create Medicine List</h3>
-              <p className="hiw-text">Add tablets, syrups, and capsules to your list.</p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="hiw-step">
-              <div className="hiw-icon">
-                <img src="/ocation%20logo.svg" alt="Select City & Pharmacies" />
-              </div>
-              <span className="hiw-number">2</span>
-              <h3 className="hiw-heading">Select City & Pharmacies</h3>
-              <p className="hiw-text">Choose your city and nearby trusted pharmacies.</p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="hiw-step">
-              <div className="hiw-icon">
-                <img src="/bid%20logo.svg" alt="Receive Bids" />
-              </div>
-              <span className="hiw-number">3</span>
-              <h3 className="hiw-heading">Receive Bids</h3>
-              <p className="hiw-text">Compare offers with price and delivery time.</p>
-            </div>
-
-            {/* Step 4 */}
-            <div className="hiw-step">
-              <div className="hiw-icon">
-                <img src="/delivery%20icon.svg" alt="Confirm Order & Delivery" />
-              </div>
-              <span className="hiw-number">4</span>
-              <h3 className="hiw-heading">Confirm Order & Delivery</h3>
-              <p className="hiw-text">Select a pharmacy, confirm, and track delivery.</p>
-            </div>
           </div>
         </div>
       </section>
 
       {/* Trusted Pharmacy Partners - Inserted between How It Works and Key Features */}
-      <section className="home-partners-section" id="partners">
-        <h2 className="partners-title">Trusted <span className="highlight">Pharmacy Partners</span></h2>
-        <p className="partners-subtitle">Partnering with leading pharmacies across the nation to ensure quality healthcare for everyone</p>
-        <div className="partners-grid">
-          <div className="partner-logo">
-            <span className="partner-name">MediCare</span>
-            <span className="partner-tag">Premium</span>
-          </div>
-          <div className="partner-logo">
-            <span className="partner-name">HealthPlus</span>
-            <span className="partner-tag">24/7</span>
-          </div>
-          <div className="partner-logo">
-            <span className="partner-name">PharmaCare</span>
-            <span className="partner-tag">Trusted</span>
-          </div>
-          <div className="partner-logo">
-            <span className="partner-name">WellnessRx</span>
-            <span className="partner-tag">Quality</span>
-          </div>
-          <div className="partner-logo">
-            <span className="partner-name">CarePharm</span>
-            <span className="partner-tag">Reliable</span>
-          </div>
-          <div className="partner-logo">
-            <span className="partner-name">LifeRx</span>
-            <span className="partner-tag">Fast</span>
-          </div>
-          <div className="partner-logo">
-            <span className="partner-name">HealthFirst</span>
-            <span className="partner-tag">Expert</span>
-          </div>
-          <div className="partner-logo">
-            <span className="partner-name">MediLink</span>
-            <span className="partner-tag">Innovative</span>
-          </div>
-        </div>
-      </section>
+
+      <TrustedPharmacies />
 
       {/* Key Features - Modern cards */}
-      <section className="features-modern full-width-section" id="features">
+      <section className="features-modern full-width-section  " id="features">
         <div className="features-inner">
           <h2 className="features-title">Key Features</h2>
-          <p className="features-subtitle">Why choose our pharmacy marketplace</p>
+          <p className="features-subtitle">
+            Why choose our pharmacy marketplace
+          </p>
           <div className="features-grid">
-            {/* Card 1 */}
-            <div className="feature-card">
-              <div className="feature-icon" aria-hidden>
-                <img src="/price%20compare%20logo.svg" alt="Price Comparison" />
-              </div>
-              <h3 className="feature-heading">Price Comparison</h3>
-              <p className="feature-text">Compare medicine prices across multiple pharmacies to get the best deal.</p>
-            </div>
-            {/* Card 2 */}
-            <div className="feature-card">
-              <div className="feature-icon"><img src="/tick%20logo.svg" alt="Real-time Availability" /></div>
-              <h3 className="feature-heading">Real-time Availability</h3>
-              <p className="feature-text">Check instant availability of medicines across verified pharmacies.</p>
-            </div>
-            {/* Card 3 */}
-            <div className="feature-card">
-              <div className="feature-icon"><img src={icons.secure} alt="Secure Orders" /></div>
-              <h3 className="feature-heading">Secure Orders</h3>
-              <p className="feature-text">Place safe and secure medicine orders with end-to-end protection.</p>
-            </div>
+            {features.map((feature) => {
+              return (
+                <div className="feature-card">
+                  <div className="feature-icon" aria-hidden>
+                    <img src={feature.src} alt={feature.alt} />
+                  </div>
+                  <h3 className="feature-heading">{feature.title}</h3>
+                  <p className="feature-text">{feature.desc}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* About Team Section */}
-      <section className="about-team-section full-width-section" id="team">
-        <div className="about-team-container">
-          <div className="about-team-left">
-            <h2 className="about-section-title">
-              Meet the Minds, <span className="highlight">Behind Our</span> Innovation:
-            </h2>
-            <p className="about-section-desc">
-              Our team of skilled and <b>dedicated professionals</b> works hard to give our users the best experience possible. We use the latest technology and smart practices to design and improve every part of our platform so it runs smoothly, stays secure, and is easy to use. From building strong systems and simple designs to offering quick customer support and regular updates, we make sure everything meets the needs of our users. Our goal is to provide a reliable, innovative, and high-quality platform that goes beyond expectations.
-            </p>
-            <div className="about-team-buttons">
-              <Link to="/contact" className="about-btn secondary">Contact Us</Link>
-            </div>
-          </div>
-          <div className="about-team-right">
-            <div className="team-list">
-              {team.map((member, i) => (
-                <div key={i} className="team-member-item">
-                  <div className="team-member-avatar">
-                    <img src={member.img} alt={member.name} />
-                  </div>
-                  <div className="team-member-info">
-                    <div className="team-member-name">{member.name}</div>
-                    <div className="team-member-role">{member.role}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
-
+      <Team />
 
       {/* FAQs - Modern Accordion */}
       <section className="faqs-modern full-width-section" id="faq">
         <div className="faqs-inner">
           <h2 className="faqs-title">Frequently Asked Questions</h2>
-          <p className="faqs-subtitle">Everything you need to know before placing your order</p>
+          <p className="faqs-subtitle">
+            Everything you need to know before placing your order
+          </p>
           <div className="faqs-list">
             {faqs.map((faq, idx) => (
-              <div className={`faqs-item${openFaq === idx ? " open" : ""}`} key={idx}>
-                <button className="faqs-question" onClick={() => setOpenFaq(openFaq === idx ? null : idx)}>
+              <div
+                className={`faqs-item${openFaq === idx ? " open" : ""}`}
+                key={idx}
+              >
+                <button
+                  className="faqs-question"
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                >
                   <span className="faqs-q-left">
                     <span className="faqs-q-icon">
                       <img src={icons[faq.icon] || icons.pill} alt="faq icon" />
                     </span>
                     <span className="faqs-q-text">{faq.question}</span>
                   </span>
-                  <span className="faqs-arrow" aria-hidden>{openFaq === idx ? "−" : "+"}</span>
+                  <span className="faqs-arrow" aria-hidden>
+                    {openFaq === idx ? "−" : "+"}
+                  </span>
                 </button>
-                <div className="faqs-answer" style={{height: openFaq === idx ? 'auto' : 0, opacity: openFaq === idx ? 1 : 0}}>
+                <div
+                  className="faqs-answer"
+                  style={{
+                    height: openFaq === idx ? "auto" : 0,
+                    opacity: openFaq === idx ? 1 : 0,
+                  }}
+                >
                   <p>{faq.answer}</p>
                 </div>
               </div>
@@ -255,13 +233,20 @@ const HomePage = () => {
 
       {/* Support/CTA Section */}
       <section className="support-section full-width-bg">
-        <div className="support-bg" style={{backgroundImage: "url('https://images.unsplash.com/photo-1671108503276-1d3d5ab23a3a?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"}} />
+        <div
+          className="support-bg"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1671108503276-1d3d5ab23a3a?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+          }}
+        />
         <div className="support-content">
-          
           <div className="support-logo">PharmacyConnect</div>
           <h3>Need Help?</h3>
           <p>Our support team is available 24/7</p>
-          <Link to="/contact#send-message" className="support-button">Email Support</Link>
+          <Link to="/contact#send-message" className="support-button">
+            Email Support
+          </Link>
         </div>
       </section>
 
@@ -270,5 +255,4 @@ const HomePage = () => {
   );
 };
 
-
-export default HomePage; 
+export default HomePage;

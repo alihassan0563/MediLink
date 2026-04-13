@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -13,7 +16,9 @@
   scroll-padding-top: 80px;
 }
 
-a, button, html {
+a,
+button,
+html {
   scroll-behavior: smooth;
 }
 
