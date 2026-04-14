@@ -4,6 +4,7 @@ import { useAuth } from "../AuthContext";
 import Header from "../component/Header";
 import PreviousMedicineLists from "../component/PreviousMedicineLists";
 import "./BuyMedicine.css";
+import API_BASE_URL from "../api";
 
 const initialMedicine = { 
   name: "", 
@@ -470,7 +471,7 @@ const BuyMedicine = () => {
                   const token = localStorage.getItem('customer_token');
                   if (token && Array.isArray(medicines) && medicines.length > 0) {
                     const name = medicines[0]?.name ? `${medicines[0].name} and ${medicines.length - 1} more` : '';
-                    fetch('http://localhost:5000/api/customer/saved-lists', {
+                    fetch(`${API_BASE_URL}/api/customer/saved-lists`, {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json',

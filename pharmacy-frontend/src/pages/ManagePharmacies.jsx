@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../api';
 
 export default function ManagePharmacies() {
   const [items, setItems] = useState([]);
@@ -10,7 +11,7 @@ export default function ManagePharmacies() {
 
   const load = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/admin/pharmacies', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/pharmacies`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -25,7 +26,7 @@ export default function ManagePharmacies() {
 
   const update = async (id, body) => {
     setError('');
-    const res = await fetch(`http://localhost:5000/api/admin/pharmacies/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/api/admin/pharmacies/${id}`, {
       method: 'PATCH',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -37,7 +38,7 @@ export default function ManagePharmacies() {
 
   const remove = async (id) => {
     if (!confirm('Delete this pharmacy? This action cannot be undone.')) return;
-    const res = await fetch(`http://localhost:5000/api/admin/pharmacies/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/api/admin/pharmacies/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });

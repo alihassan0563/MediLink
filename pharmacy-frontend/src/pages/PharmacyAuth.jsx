@@ -3,10 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import "./PharmacyAuth.css";
 import { useAuth } from "../AuthContext";
 import Header from "../component/Header";
+import API_BASE_URL from "../api";
 
 
 
-const API_URL = "http://localhost:5000/api/pharmacy";
+const API_URL = `${API_BASE_URL}/api/pharmacy`;
 
 const PharmacyAuth = () => {
   const [isSignup, setIsSignup] = useState(false);

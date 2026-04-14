@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import API_BASE_URL from '../api';
 
 const PreviousMedicineLists = ({ onClose, onUseList }) => {
   const [lists, setLists] = useState([]);
@@ -15,7 +16,7 @@ const PreviousMedicineLists = ({ onClose, onUseList }) => {
           setLoading(false);
           return;
         }
-        const res = await fetch('http://localhost:5000/api/customer/saved-lists', {
+        const res = await fetch(`${API_BASE_URL}/api/customer/saved-lists`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -42,7 +43,7 @@ const PreviousMedicineLists = ({ onClose, onUseList }) => {
     if (!proceed) return;
     try {
       setDeletingId(id);
-      const res = await fetch(`http://localhost:5000/api/customer/saved-lists/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/customer/saved-lists/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

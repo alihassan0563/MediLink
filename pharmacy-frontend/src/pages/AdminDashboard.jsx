@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../api';
 
 export default function AdminDashboard() {
   const { admin } = useAuth();
@@ -11,7 +12,7 @@ export default function AdminDashboard() {
     const token = localStorage.getItem('admin_token');
     const load = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/admin/stats', {
+        const res = await fetch(`${API_BASE_URL}/api/admin/stats`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();

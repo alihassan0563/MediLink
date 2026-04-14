@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../api';
 
 export default function ManageCustomers() {
   const [items, setItems] = useState([]);
@@ -8,7 +9,7 @@ export default function ManageCustomers() {
 
   const load = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/admin/customers', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/customers`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -23,7 +24,7 @@ export default function ManageCustomers() {
 
   const remove = async (id) => {
     if (!confirm('Delete this customer? This action cannot be undone.')) return;
-    const res = await fetch(`http://localhost:5000/api/admin/customers/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/api/admin/customers/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });

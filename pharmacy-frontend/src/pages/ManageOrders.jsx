@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../api';
 
 export default function ManageOrders() {
   const [items, setItems] = useState([]);
@@ -8,7 +9,7 @@ export default function ManageOrders() {
 
   const load = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/admin/orders', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/orders`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -24,7 +25,7 @@ export default function ManageOrders() {
 
   const remove = async (id) => {
     if (!confirm('Reject this order request? This will notify both customer and pharmacy.')) return;
-    const res = await fetch(`http://localhost:5000/api/admin/orders/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/api/admin/orders/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });

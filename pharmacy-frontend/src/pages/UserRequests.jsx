@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useAuth } from "../AuthContext";
 import Header from "../component/Header";
 import "./BuyMedicine.css";
+import API_BASE_URL from "../api";
 
 const UserRequests = () => {
   const { customer, isLoading: authLoading } = useAuth();
@@ -26,12 +27,12 @@ const UserRequests = () => {
     }
     
     Promise.all([
-      fetch("http://localhost:5000/api/customer/requests", {
+      fetch(`${API_BASE_URL}/api/customer/requests`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('customer_token')}`
         }
       }),
-      fetch("http://localhost:5000/api/customer/bills", {
+      fetch(`${API_BASE_URL}/api/customer/bills`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('customer_token')}`
         }
@@ -80,7 +81,7 @@ const UserRequests = () => {
 
   const handleAcceptOffer = async (billId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/customer/accept-bill/${billId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/customer/accept-bill/${billId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('customer_token')}`

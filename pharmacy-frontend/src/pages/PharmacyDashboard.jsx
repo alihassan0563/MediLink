@@ -6,6 +6,8 @@ import Header from "../component/Header";
 
 import "./pharmacyDashboard.css";
 
+import API_BASE_URL from "../api";
+
 
 
 const PharmacyDashboard = () => {
@@ -180,7 +182,7 @@ const PharmacyDashboard = () => {
 
     try {
 
-      const response = await fetch("http://localhost:5000/api/pharmacy/profile", {
+      const response = await fetch("${API_BASE_URL}/api/pharmacy/profile", {
 
         headers: {
 
@@ -292,7 +294,7 @@ const PharmacyDashboard = () => {
 
     try {
 
-      const response = await fetch("http://localhost:5000/api/pharmacy/requests", {
+      const response = await fetch("${API_BASE_URL}/api/pharmacy/requests", {
 
         headers: {
 
@@ -448,7 +450,7 @@ const PharmacyDashboard = () => {
 
     try {
 
-      const response = await fetch(`http://localhost:5000/api/pharmacy/reject-request/${selectedRequest._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/pharmacy/reject-request/${selectedRequest._id}`, {
 
         method: 'POST',
 
@@ -552,7 +554,7 @@ const PharmacyDashboard = () => {
 
       
 
-      const response = await fetch(`http://localhost:5000/api/pharmacy/delete-request/${requestId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/pharmacy/delete-request/${requestId}`, {
 
         method: 'DELETE',
 
@@ -736,7 +738,7 @@ const PharmacyDashboard = () => {
 
 
 
-      const response = await fetch(`http://localhost:5000/api/pharmacy/accept-request/${selectedRequest._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/pharmacy/accept-request/${selectedRequest._id}`, {
 
         method: 'POST',
 
@@ -852,13 +854,13 @@ const PharmacyDashboard = () => {
 
       const headers = { 'Authorization': `Bearer ${localStorage.getItem('pharmacy_token')}` };
 
-      let res = await fetch(`http://localhost:5000/api/pharmacy/bills/${billId}`, { headers });
+      let res = await fetch(`${API_BASE_URL}/api/pharmacy/bills/${billId}`, { headers });
 
       if (!res.ok) {
 
         // Fallback if different route
 
-        res = await fetch(`http://localhost:5000/api/bills/${billId}`, { headers });
+        res = await fetch(`${API_BASE_URL}/api/bills/${billId}`, { headers });
 
       }
 

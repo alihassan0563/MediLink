@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./BuyMedicine.css";
 import { useAuth } from "../AuthContext";
+import API_BASE_URL from "../api";
 
 const cities = ["Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad", "Multan", "Peshawar", "Sialkot"];
 
@@ -18,7 +19,7 @@ const SelectPharmacy = () => {
   useEffect(() => {
     if (city) {
       setLoading(true);
-      fetch(`http://localhost:5000/api/pharmacy/pharmacies?city=${encodeURIComponent(city)}`)
+      fetch(`${API_BASE_URL}/api/pharmacy/pharmacies?city=${encodeURIComponent(city)}`)
         .then(res => res.json())
         .then(data => {
           setPharmacies(data);
@@ -147,7 +148,7 @@ const SelectPharmacy = () => {
                     const headers = { "Content-Type": "application/json" };
                     const token = localStorage.getItem("customer_token");
                     if (token) headers.Authorization = `Bearer ${token}`;
-                    const res = await fetch("http://localhost:5000/api/customer/request", {
+                    const res = await fetch(`${API_BASE_URL}/api/customer/request`, {
                       method: "POST",
                       headers,
                       body: JSON.stringify(reqBody)

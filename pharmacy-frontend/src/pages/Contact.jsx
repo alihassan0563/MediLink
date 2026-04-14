@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../component/Header';
 import contactImage from '../assets/logo.jpg';
 import './Contact.css';
+import API_BASE_URL from '../api';
 
 const Contact = () => {
   const [name, setName] = useState('');
@@ -35,7 +36,7 @@ const Contact = () => {
 
     try {
       setSubmitting(true);
-      const response = await fetch('http://localhost:5000/api/contact', {
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, subject, message })

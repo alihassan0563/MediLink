@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import Header from "../component/Header";
 import "./CustomerAuth.css";
+import API_BASE_URL from "../api";
 
 const Footer = () => (
   <footer className="footer">
@@ -20,7 +21,7 @@ const Footer = () => (
   </footer>
 );
 
-const API_URL = "http://localhost:5000/api/customer";
+const API_URL = `${API_BASE_URL}/api/customer`;
 
 const CustomerAuth = () => {
   const [isSignup, setIsSignup] = useState(false);
