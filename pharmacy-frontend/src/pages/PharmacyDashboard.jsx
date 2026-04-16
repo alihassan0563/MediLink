@@ -182,7 +182,7 @@ const PharmacyDashboard = () => {
 
     try {
 
-      const response = await fetch("${API_BASE_URL}/api/pharmacy/profile", {
+      const response = await fetch(`${API_BASE_URL}/api/pharmacy/profile`, {
 
         headers: {
 
@@ -294,7 +294,7 @@ const PharmacyDashboard = () => {
 
     try {
 
-      const response = await fetch("${API_BASE_URL}/api/pharmacy/requests", {
+      const response = await fetch(`${API_BASE_URL}/api/pharmacy/requests`, {
 
         headers: {
 
