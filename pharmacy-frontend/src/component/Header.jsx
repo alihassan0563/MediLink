@@ -14,7 +14,7 @@ const Header = () => {
   // Generate Gravatar URL when pharmacy changes
   useEffect(() => {
     if (pharmacy?.email) {
-      const url = getGravatarUrl(pharmacy.email, 80, '404');
+      const url = getGravatarUrl(pharmacy.email, 80, "404");
       setGravatarUrl(url);
       setShowLetter(false);
     } else {
@@ -34,16 +34,20 @@ const Header = () => {
           <img src={logo} alt="PharmacyConnect" className="header-logo" />
         </Link>
       </div>
-      <nav id="primary-navigation" className={`nav-center${mobileOpen ? " open" : ""}`}>
+      <nav
+        id="primary-navigation"
+        className={`nav-center${mobileOpen ? " open" : ""}`}
+      >
         <Link to="/">Home</Link>
         <Link to="/#faq">FAQs</Link>
         <Link to="/#features">Features</Link>
         <Link to="/about">About Us</Link>
         <Link to="/contact">Contact Us</Link>
-        
-        
+
         {!customer && !pharmacy && (
-          <Link to="/login" className="login-box login-mobile">Login</Link>
+          <Link to="/login" className="login-box login-mobile">
+            Login
+          </Link>
         )}
       </nav>
       <div className="nav-right">
@@ -59,7 +63,9 @@ const Header = () => {
           <span></span>
         </button>
         {!customer && !pharmacy && (
-          <Link to="/login" className="login-box login-desktop">Login</Link>
+          <Link to="/login" className="login-box login-desktop">
+            Login
+          </Link>
         )}
         {customer && (
           <div className="customer-dropdown">
@@ -73,7 +79,7 @@ const Header = () => {
                 />
               ) : (
                 <div className="avatar-letter">
-                  {(customer.email || 'C').charAt(0).toUpperCase()}
+                  {(customer.email || "C").charAt(0).toUpperCase()}
                 </div>
               )}
             </div>
@@ -91,7 +97,7 @@ const Header = () => {
                       />
                     ) : (
                       <div className="dropdown-avatar-letter">
-                        {(customer.email || 'C').charAt(0).toUpperCase()}
+                        {(customer.email || "C").charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
@@ -100,9 +106,7 @@ const Header = () => {
                     <div className="dropdown-customer-name">
                       {customer.fullName || customer.email}
                     </div>
-                    <div className="dropdown-email">
-                      {customer.email}
-                    </div>
+                    <div className="dropdown-email">{customer.email}</div>
                   </div>
                 </div>
               </div>
@@ -127,7 +131,7 @@ const Header = () => {
                 />
               ) : (
                 <div className="avatar-letter">
-                  {(pharmacy.email || 'P').charAt(0).toUpperCase()}
+                  {(pharmacy.email || "P").charAt(0).toUpperCase()}
                 </div>
               )}
             </div>
@@ -144,7 +148,7 @@ const Header = () => {
                       />
                     ) : (
                       <div className="dropdown-avatar-letter">
-                        {(pharmacy.email || 'P').charAt(0).toUpperCase()}
+                        {(pharmacy.email || "P").charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
@@ -152,9 +156,7 @@ const Header = () => {
                     <div className="dropdown-pharmacy-name">
                       {pharmacy.pharmacyName || pharmacy.email}
                     </div>
-                    <div className="dropdown-email">
-                      {pharmacy.email}
-                    </div>
+                    <div className="dropdown-email">{pharmacy.email}</div>
                   </div>
                 </div>
               </div>

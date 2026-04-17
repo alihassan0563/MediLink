@@ -3,6 +3,7 @@ import { useAuth } from "../AuthContext";
 import Header from "../component/Header";
 import "./BuyMedicine.css";
 import API_BASE_URL from "../api";
+import { toast } from "sonner";
 
 const UserRequests = () => {
   const { customer, isLoading: authLoading } = useAuth();
@@ -19,50 +20,52 @@ const UserRequests = () => {
   useEffect(() => {
     // Wait for auth to initialize before proceeding
     if (authLoading) return;
-    
+
     if (!customer || !customer._id) {
       setError("Not logged in as customer.");
       setLoading(false);
       return;
     }
-    
+
     Promise.all([
       fetch(`${API_BASE_URL}/api/customer/requests`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('customer_token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("customer_token")}`,
+        },
       }),
       fetch(`${API_BASE_URL}/api/customer/bills`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('customer_token')}`
-        }
-      })
+          Authorization: `Bearer ${localStorage.getItem("customer_token")}`,
+        },
+      }),
     ])
-    .then(responses => Promise.all(responses.map(res => res.json())))
-    .then(([requestsData, billsData]) => {
-      setRequests(Array.isArray(requestsData) ? requestsData : []);
-      setBills(Array.isArray(billsData) ? billsData : []);
-      setLoading(false);
-    })
-    .catch((error) => {
-      setError("Failed to load data.");
-      setLoading(false);
-    });
+      .then((responses) => Promise.all(responses.map((res) => res.json())))
+      .then(([requestsData, billsData]) => {
+        setRequests(Array.isArray(requestsData) ? requestsData : []);
+        setBills(Array.isArray(billsData) ? billsData : []);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError("Failed to load data.");
+        setLoading(false);
+      });
   }, [customer, authLoading]);
 
   const getPharmacyResponses = (request) => {
     if (!request || !request._id) return [];
-    const requestId = typeof request._id === 'string' ? request._id : String(request._id);
+    const requestId =
+      typeof request._id === "string" ? request._id : String(request._id);
     return bills
       .filter((bill) => {
         if (!bill) return false;
         const bReq = bill.request;
-        const billRequestId = typeof bReq === 'string' ? bReq : (bReq && (bReq._id || bReq.id));
+        const billRequestId =
+          typeof bReq === "string" ? bReq : bReq && (bReq._id || bReq.id);
         return billRequestId && String(billRequestId) === requestId;
       })
       .map((bill) => ({
         pharmacyId: bill?.pharmacy?._id,
-        pharmacyName: bill?.pharmacy?.pharmacyName || 'Pharmacy',
+        pharmacyName: bill?.pharmacy?.pharmacyName || "Pharmacy",
         pharmacy: bill?.pharmacy,
         status: bill?.status,
         price: bill?.totalAmount,
@@ -81,38 +84,50 @@ const UserRequests = () => {
 
   const handleAcceptOffer = async (billId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/customer/accept-bill/${billId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('customer_token')}`
-        }
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/customer/accept-bill/${billId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("customer_token")}`,
+          },
+        },
+      );
       if (response.ok) {
         window.location.reload();
-        alert('Offer accepted successfully!');
+        toast.success("Offer accepted successfully!");
       } else {
         const errorData = await response.json();
-        alert(errorData.message || 'Failed to accept offer');
+        toast.error(errorData.message || "Failed to accept offer");
       }
     } catch (err) {
-      alert('Error accepting offer. Please try again.');
+      toast.error("Error accepting offer. Please try again.");
     }
   };
 
   const handleContactPharmacy = (pharmacyPhone) => {
-    if (pharmacyPhone && pharmacyPhone !== 'N/A') {
-      window.open(`tel:${pharmacyPhone}`, '_self');
+    if (pharmacyPhone && pharmacyPhone !== "N/A") {
+      window.open(`tel:${pharmacyPhone}`, "_self");
     } else {
-      alert('Phone number not available for this pharmacy.');
+      toast.error("Phone number not available for this pharmacy.");
     }
   };
 
-  const formatCurrency = (num) => new Intl.NumberFormat('en-PK', { style: 'currency', currency: 'PKR', currencyDisplay: 'code', minimumFractionDigits: 2 }).format(Number(num || 0));
+  const formatCurrency = (num) =>
+    new Intl.NumberFormat("en-PK", {
+      style: "currency",
+      currency: "PKR",
+      currencyDisplay: "code",
+      minimumFractionDigits: 2,
+    }).format(Number(num || 0));
 
   // Helper to scroll right column into view
   const scrollRightColIntoView = () => {
     if (rightColRef.current) {
-      rightColRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      rightColRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
       setHighlightRight(true);
       setTimeout(() => setHighlightRight(false), 800);
     }
@@ -121,12 +136,37 @@ const UserRequests = () => {
   return (
     <div className="buy-medicine-bg">
       <Header />
-      <div className="buy-medicine-inner form-visible" style={{ display: 'flex', gap: 48, minHeight: 600, maxWidth: '1400px', width: '98vw', transition: 'max-width 0.4s', height: 'auto', overflow: 'hidden' }}>
+      <div
+        className="buy-medicine-inner form-visible"
+        style={{
+          display: "flex",
+          gap: 48,
+          minHeight: 600,
+          maxWidth: "1400px",
+          width: "98vw",
+          transition: "max-width 0.4s",
+          height: "auto",
+          overflow: "hidden",
+        }}
+      >
         {/* Left Column: Requests and Pharmacies */}
-        <div style={{ flex: 1.2, minWidth: 380, paddingRight: 10, paddingLeft: 10, maxHeight: '92vh', overflowY: 'auto' }}>
+        <div
+          style={{
+            flex: 1.2,
+            minWidth: 380,
+            paddingRight: 10,
+            paddingLeft: 10,
+            maxHeight: "92vh",
+            overflowY: "auto",
+          }}
+        >
           <h2 className="buy-medicine-title">My Requests</h2>
-          {authLoading && <div className="loading-msg">Initializing dashboard...</div>}
-          {!authLoading && loading && <div className="loading-msg">Loading your requests...</div>}
+          {authLoading && (
+            <div className="loading-msg">Initializing dashboard...</div>
+          )}
+          {!authLoading && loading && (
+            <div className="loading-msg">Loading your requests...</div>
+          )}
           {!authLoading && error && <div className="error-msg">{error}</div>}
           {!authLoading && !loading && !error && requests.length === 0 && (
             <div className="no-requests">
@@ -141,75 +181,171 @@ const UserRequests = () => {
                 const isSelectedRequest = selectedRequestId === req._id;
                 // For each selected request, show pharmacy names and status only
                 return (
-                  <div key={req._id || idx} className={`user-request-card${isSelectedRequest ? ' selected' : ''}`} style={{
-                    marginBottom: 22,
-                    marginLeft: isSelectedRequest ? 4 : 0, // add a small left margin for selected card
-                    border: isSelectedRequest ? '2px solid #000' : '1.5px solid #e0e0e0',
-                    borderRadius: 10,
-                    padding: 16,
-                    background: isSelectedRequest ? '#f3fcfa' : '#fff',
-                    boxShadow: isSelectedRequest ? '0 6px 24px #b2f0e6' : '0 2px 8px #e0e0e0',
-                    transform: isSelectedRequest ? 'scale(1.04)' : 'scale(1)',
-                    transition: 'all 0.18s cubic-bezier(.4,1.4,.6,1)'
-                  }}>
-                    <div style={{ fontWeight: 600, marginBottom: 4, color: '#2ca7a0', fontSize: 17, cursor: 'pointer' }} onClick={() => { setSelectedRequestId(req._id); setShowMedicineList(false); setSelectedPharmacyBill(null); }}>
+                  <div
+                    key={req._id || idx}
+                    className={`user-request-card${isSelectedRequest ? " selected" : ""}`}
+                    style={{
+                      marginBottom: 22,
+                      marginLeft: isSelectedRequest ? 4 : 0, // add a small left margin for selected card
+                      border: isSelectedRequest
+                        ? "2px solid #000"
+                        : "1.5px solid #e0e0e0",
+                      borderRadius: 10,
+                      padding: 16,
+                      background: isSelectedRequest ? "#f3fcfa" : "#fff",
+                      boxShadow: isSelectedRequest
+                        ? "0 6px 24px #b2f0e6"
+                        : "0 2px 8px #e0e0e0",
+                      transform: isSelectedRequest ? "scale(1.04)" : "scale(1)",
+                      transition: "all 0.18s cubic-bezier(.4,1.4,.6,1)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        marginBottom: 4,
+                        color: "#2ca7a0",
+                        fontSize: 17,
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setSelectedRequestId(req._id);
+                        setShowMedicineList(false);
+                        setSelectedPharmacyBill(null);
+                      }}
+                    >
                       Request #{req._id.slice(-6)}
                     </div>
-                    <div style={{ fontSize: 13, color: '#666', marginBottom: 8 }}>{new Date(req.createdAt).toLocaleDateString()}</div>
-                    <div style={{ fontSize: 14, marginBottom: 8 }}>Pharmacies:</div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                      {(req.selectedPharmacies && req.selectedPharmacies.length > 0) ? (
+                    <div
+                      style={{ fontSize: 13, color: "#666", marginBottom: 8 }}
+                    >
+                      {new Date(req.createdAt).toLocaleDateString()}
+                    </div>
+                    <div style={{ fontSize: 14, marginBottom: 8 }}>
+                      Pharmacies:
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 10,
+                      }}
+                    >
+                      {req.selectedPharmacies &&
+                      req.selectedPharmacies.length > 0 ? (
                         req.selectedPharmacies.map((pharmacyId, pidx) => {
                           // Find if this pharmacy has responded
-                          const response = pharmacyResponses.find(bill => bill.pharmacyId === pharmacyId);
+                          const response = pharmacyResponses.find(
+                            (bill) => bill.pharmacyId === pharmacyId,
+                          );
                           // Show actual pharmacy name if available
-                          const pharmacyName = response ? response.pharmacyName : (req.pharmacyNames && req.pharmacyNames[pidx]) || 'Pharmacy';
+                          const pharmacyName = response
+                            ? response.pharmacyName
+                            : (req.pharmacyNames && req.pharmacyNames[pidx]) ||
+                              "Pharmacy";
                           // Determine if any offer is accepted for this request
-                          const acceptedBill = pharmacyResponses.find(bill => bill.status === 'accepted' || bill.status === 'completed');
+                          const acceptedBill = pharmacyResponses.find(
+                            (bill) =>
+                              bill.status === "accepted" ||
+                              bill.status === "completed",
+                          );
                           // Determine status text and color
-                          let statusText = 'Response Pending';
-                          let statusColor = '#ff9800';
+                          let statusText = "Response Pending";
+                          let statusColor = "#ff9800";
                           // Rejected if pharmacy explicitly declined or bill marked rejected
-                          const isRejected = (Array.isArray(req.rejectedPharmacies) && req.rejectedPharmacies.includes(pharmacyId)) || (response && response.status === 'rejected');
+                          const isRejected =
+                            (Array.isArray(req.rejectedPharmacies) &&
+                              req.rejectedPharmacies.includes(pharmacyId)) ||
+                            (response && response.status === "rejected");
                           if (isRejected && !acceptedBill) {
-                            statusText = 'Rejected';
-                            statusColor = '#d32f2f';
+                            statusText = "Rejected";
+                            statusColor = "#d32f2f";
                           } else if (response) {
                             if (acceptedBill) {
                               if (acceptedBill.pharmacyId === pharmacyId) {
-                                statusText = 'Order Confirmed';
-                                statusColor = '#1976d2';
+                                statusText = "Order Confirmed";
+                                statusColor = "#1976d2";
                               } else {
-                                statusText = 'Ignored';
-                                statusColor = '#bdbdbd';
+                                statusText = "Ignored";
+                                statusColor = "#bdbdbd";
                               }
-                            } else if (response.status === 'accepted' || response.status === 'completed') {
-                              statusText = 'Order Confirmed';
-                              statusColor = '#1976d2';
+                            } else if (
+                              response.status === "accepted" ||
+                              response.status === "completed"
+                            ) {
+                              statusText = "Order Confirmed";
+                              statusColor = "#1976d2";
                             } else {
-                              statusText = 'Bill Generated';
-                              statusColor = '#28a745';
+                              statusText = "Bill Generated";
+                              statusColor = "#28a745";
                             }
                           }
                           return (
-                            <div key={pharmacyId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fafbfc', borderRadius: 6, padding: '6px 12px' }}>
-                              <span style={{ fontWeight: 600, color: '#2ca7a0', fontSize: 15 }}>{pharmacyName}</span>
-                              <span style={{ color: statusColor, fontSize: 13, fontWeight: 500 }}>
+                            <div
+                              key={pharmacyId}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                background: "#fafbfc",
+                                borderRadius: 6,
+                                padding: "6px 12px",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontWeight: 600,
+                                  color: "#2ca7a0",
+                                  fontSize: 15,
+                                }}
+                              >
+                                {pharmacyName}
+                              </span>
+                              <span
+                                style={{
+                                  color: statusColor,
+                                  fontSize: 13,
+                                  fontWeight: 500,
+                                }}
+                              >
                                 {statusText}
                               </span>
                             </div>
                           );
                         })
                       ) : (
-                        <div style={{ color: '#999', fontSize: 13, marginBottom: 8 }}>No pharmacies selected</div>
+                        <div
+                          style={{
+                            color: "#999",
+                            fontSize: 13,
+                            marginBottom: 8,
+                          }}
+                        >
+                          No pharmacies selected
+                        </div>
                       )}
                     </div>
                     {/* Show button at the bottom */}
-                    <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
+                    <div
+                      style={{
+                        marginTop: 16,
+                        display: "flex",
+                        justifyContent: "flex-end",
+                      }}
+                    >
                       {pharmacyResponses.length > 0 ? (
                         <button
                           className="view-response-btn"
-                          style={{ padding: '8px 20px', fontSize: 15, background: '#2ca7a0', color: '#fff', borderRadius: 6, border: 'none', fontWeight: 600, cursor: 'pointer' }}
+                          style={{
+                            padding: "8px 20px",
+                            fontSize: 15,
+                            background: "#2ca7a0",
+                            color: "#fff",
+                            borderRadius: 6,
+                            border: "none",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
                           onClick={() => {
                             setSelectedRequestId(req._id);
                             setShowMedicineList(false);
@@ -222,7 +358,16 @@ const UserRequests = () => {
                       ) : (
                         <button
                           className="view-response-btn"
-                          style={{ padding: '8px 20px', fontSize: 15, background: '#1976d2', color: '#fff', borderRadius: 6, border: 'none', fontWeight: 600, cursor: 'pointer' }}
+                          style={{
+                            padding: "8px 20px",
+                            fontSize: 15,
+                            background: "#1976d2",
+                            color: "#fff",
+                            borderRadius: 6,
+                            border: "none",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
                           onClick={() => {
                             setSelectedRequestId(req._id);
                             setShowMedicineList(true);
@@ -234,7 +379,7 @@ const UserRequests = () => {
                         </button>
                       )}
                     </div>
-                    <div style={{ marginTop: 8, fontSize: 13, color: '#888' }}>
+                    <div style={{ marginTop: 8, fontSize: 13, color: "#888" }}>
                       {pharmacyResponses.length} pharmacy response(s)
                     </div>
                   </div>
@@ -250,49 +395,66 @@ const UserRequests = () => {
             flex: 2,
             minWidth: 500,
             paddingLeft: 32,
-            position: 'relative',
-            alignSelf: 'flex-start',
-            transition: 'box-shadow 0.3s',
-            boxShadow: highlightRight ? '0 0 0 4px #2ca7a0' : 'none',
-            background: '#fff',
-            zIndex: 2
+            position: "relative",
+            alignSelf: "flex-start",
+            transition: "box-shadow 0.3s",
+            boxShadow: highlightRight ? "0 0 0 4px #2ca7a0" : "none",
+            background: "#fff",
+            zIndex: 2,
           }}
         >
           <h2 className="buy-medicine-title">Pharmacy Offer Details</h2>
           {/* Chrome-style tabs for pharmacies */}
           {(() => {
             if (!selectedRequestId || showMedicineList) return false;
-            const selectedReq = Array.isArray(requests) ? requests.find((r) => r._id === selectedRequestId) : null;
+            const selectedReq = Array.isArray(requests)
+              ? requests.find((r) => r._id === selectedRequestId)
+              : null;
             const responses = getPharmacyResponses(selectedReq);
             return responses.length > 0;
           })() && (
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 0, marginBottom: 24, borderBottom: '2.5px solid #e0e0e0', minHeight: 48 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                gap: 0,
+                marginBottom: 24,
+                borderBottom: "2.5px solid #e0e0e0",
+                minHeight: 48,
+              }}
+            >
               {(() => {
-                const selectedReq = Array.isArray(requests) ? requests.find((r) => r._id === selectedRequestId) : null;
+                const selectedReq = Array.isArray(requests)
+                  ? requests.find((r) => r._id === selectedRequestId)
+                  : null;
                 const responses = getPharmacyResponses(selectedReq);
                 return responses;
               })().map((pharmacyBill, idx) => {
-                const isActive = selectedPharmacyBill && selectedPharmacyBill.billId === pharmacyBill.billId;
+                const isActive =
+                  selectedPharmacyBill &&
+                  selectedPharmacyBill.billId === pharmacyBill.billId;
                 return (
                   <div
                     key={pharmacyBill.pharmacyId}
                     onClick={() => setSelectedPharmacyBill(pharmacyBill)}
                     style={{
-                      cursor: 'pointer',
-                      background: isActive ? '#fff' : '#eaf7f6',
-                      color: isActive ? '#2ca7a0' : '#666',
+                      cursor: "pointer",
+                      background: isActive ? "#fff" : "#eaf7f6",
+                      color: isActive ? "#2ca7a0" : "#666",
                       borderTopLeftRadius: 12,
                       borderTopRightRadius: 12,
-                      border: isActive ? '2.5px solid #2ca7a0' : '2.5px solid #e0e0e0',
-                      borderBottom: isActive ? 'none' : '2.5px solid #e0e0e0',
+                      border: isActive
+                        ? "2.5px solid #2ca7a0"
+                        : "2.5px solid #e0e0e0",
+                      borderBottom: isActive ? "none" : "2.5px solid #e0e0e0",
                       fontWeight: isActive ? 700 : 500,
                       fontSize: 16,
-                      padding: '12px 32px 10px 32px',
+                      padding: "12px 32px 10px 32px",
                       marginRight: 2,
-                      marginBottom: isActive ? '-2.5px' : 0,
-                      boxShadow: isActive ? '0 2px 12px #b2f0e6' : 'none',
+                      marginBottom: isActive ? "-2.5px" : 0,
+                      boxShadow: isActive ? "0 2px 12px #b2f0e6" : "none",
                       zIndex: isActive ? 2 : 1,
-                      transition: 'all 0.22s cubic-bezier(.4,1.4,.6,1)'
+                      transition: "all 0.22s cubic-bezier(.4,1.4,.6,1)",
                     }}
                   >
                     {pharmacyBill.pharmacyName}
@@ -303,15 +465,41 @@ const UserRequests = () => {
           )}
           {/* Animated offer details below tabs or medicine list */}
           {showMedicineList && selectedRequestId ? (
-            <div className="bill-details-form" style={{ background: '#f8fafd', borderRadius: 12, padding: 32, boxShadow: '0 2px 12px #b2f0e6', animation: 'fadeInRow 0.5s', minHeight: 200 }}>
-              <div style={{ fontWeight: 700, fontSize: 22, marginBottom: 8, color: '#2ca7a0', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div
+              className="bill-details-form"
+              style={{
+                background: "#f8fafd",
+                borderRadius: 12,
+                padding: 32,
+                boxShadow: "0 2px 12px #b2f0e6",
+                animation: "fadeInRow 0.5s",
+                minHeight: 200,
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: 22,
+                  marginBottom: 8,
+                  color: "#2ca7a0",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                }}
+              >
                 Medicine List
               </div>
               <div style={{ marginBottom: 18, fontSize: 15 }}>
                 <b>Request ID:</b> {selectedRequestId.slice(-6)}
               </div>
-              <div className="medicine-table-container" style={{ marginBottom: 18 }}>
-                <table className="medicine-popup-table" style={{ width: '100%' }}>
+              <div
+                className="medicine-table-container"
+                style={{ marginBottom: 18 }}
+              >
+                <table
+                  className="medicine-popup-table"
+                  style={{ width: "100%" }}
+                >
                   <thead>
                     <tr>
                       <th>Medicine Name</th>
@@ -322,55 +510,120 @@ const UserRequests = () => {
                   </thead>
                   <tbody>
                     {(() => {
-                      const req = Array.isArray(requests) ? requests.find(r => r._id === selectedRequestId) : null;
-                      return req && req.medicines ? req.medicines.map((med, medIndex) => (
-                        <tr key={medIndex}>
-                          <td>{med.name}</td>
-                          <td>{med.type || '-'}</td>
-                          <td>{med.strength || '-'}</td>
-                          <td>{med.quantity}</td>
-                        </tr>
-                      )) : null;
+                      const req = Array.isArray(requests)
+                        ? requests.find((r) => r._id === selectedRequestId)
+                        : null;
+                      return req && req.medicines
+                        ? req.medicines.map((med, medIndex) => (
+                            <tr key={medIndex}>
+                              <td>{med.name}</td>
+                              <td>{med.type || "-"}</td>
+                              <td>{med.strength || "-"}</td>
+                              <td>{med.quantity}</td>
+                            </tr>
+                          ))
+                        : null;
                     })()}
                   </tbody>
                 </table>
               </div>
             </div>
           ) : !selectedPharmacyBill ? (
-            <div style={{ color: '#888', fontSize: 18, marginTop: 48, textAlign: 'center', minHeight: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Select a request and click a button to view details.</div>
+            <div
+              style={{
+                color: "#888",
+                fontSize: 18,
+                marginTop: 48,
+                textAlign: "center",
+                minHeight: 200,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              Select a request and click a button to view details.
+            </div>
           ) : (
             (() => {
               // Find if any offer is accepted for this request
-              const selectedReq = Array.isArray(requests) ? requests.find((r) => r._id === selectedRequestId) : null;
+              const selectedReq = Array.isArray(requests)
+                ? requests.find((r) => r._id === selectedRequestId)
+                : null;
               const pharmacyResponses = getPharmacyResponses(selectedReq);
-              const acceptedBill = pharmacyResponses.find(bill => bill.status === 'accepted' || bill.status === 'completed');
-              const isRejected = selectedPharmacyBill && selectedPharmacyBill.status === 'rejected';
-              const isAccepted = acceptedBill && acceptedBill.billId === selectedPharmacyBill.billId;
-              const isIgnored = acceptedBill && acceptedBill.billId !== selectedPharmacyBill.billId;
+              const acceptedBill = pharmacyResponses.find(
+                (bill) =>
+                  bill.status === "accepted" || bill.status === "completed",
+              );
+              const isRejected =
+                selectedPharmacyBill &&
+                selectedPharmacyBill.status === "rejected";
+              const isAccepted =
+                acceptedBill &&
+                acceptedBill.billId === selectedPharmacyBill.billId;
+              const isIgnored =
+                acceptedBill &&
+                acceptedBill.billId !== selectedPharmacyBill.billId;
               return (
-                <div className="bill-details-form" style={{ background: '#f8fafd', borderRadius: 12, padding: 32, boxShadow: '0 2px 12px #b2f0e6', animation: 'fadeInRow 0.5s' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
+                <div
+                  className="bill-details-form"
+                  style={{
+                    background: "#f8fafd",
+                    borderRadius: 12,
+                    padding: 32,
+                    boxShadow: "0 2px 12px #b2f0e6",
+                    animation: "fadeInRow 0.5s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      marginBottom: 18,
+                    }}
+                  >
                     {/* Left Side: Pharmacy Name and Delivery Time */}
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 900, fontSize: 26, marginBottom: 8, color: '#2ca7a0', letterSpacing: 1 }}>
+                      <div
+                        style={{
+                          fontWeight: 900,
+                          fontSize: 26,
+                          marginBottom: 8,
+                          color: "#2ca7a0",
+                          letterSpacing: 1,
+                        }}
+                      >
                         {selectedPharmacyBill.pharmacyName}
-                  </div>
-                      <div style={{ fontSize: 16, color: '#333', marginBottom: 4 }}>
-                    <b>Delivery Time:</b> {selectedPharmacyBill.deliveryTime}
+                      </div>
+                      <div
+                        style={{ fontSize: 16, color: "#333", marginBottom: 4 }}
+                      >
+                        <b>Delivery Time:</b>{" "}
+                        {selectedPharmacyBill.deliveryTime}
                       </div>
                     </div>
                     {/* Right Side: Address and Phone */}
-                    <div style={{ flex: 1, textAlign: 'right' }}>
-                      <div style={{ fontSize: 15, color: '#666', marginBottom: 4 }}>
-                        <b>Address:</b> {selectedPharmacyBill.pharmacy?.address || 'N/A'}
+                    <div style={{ flex: 1, textAlign: "right" }}>
+                      <div
+                        style={{ fontSize: 15, color: "#666", marginBottom: 4 }}
+                      >
+                        <b>Address:</b>{" "}
+                        {selectedPharmacyBill.pharmacy?.address || "N/A"}
                       </div>
-                      <div style={{ fontSize: 15, color: '#666' }}>
-                        <b>Phone:</b> {selectedPharmacyBill.pharmacy?.phone || 'N/A'}
+                      <div style={{ fontSize: 15, color: "#666" }}>
+                        <b>Phone:</b>{" "}
+                        {selectedPharmacyBill.pharmacy?.phone || "N/A"}
                       </div>
                     </div>
                   </div>
-                  <div className="medicine-table-container" style={{ marginBottom: 18 }}>
-                    <table className="medicine-popup-table" style={{ width: '100%' }}>
+                  <div
+                    className="medicine-table-container"
+                    style={{ marginBottom: 18 }}
+                  >
+                    <table
+                      className="medicine-popup-table"
+                      style={{ width: "100%" }}
+                    >
                       <thead>
                         <tr>
                           <th>Medicine Name</th>
@@ -385,8 +638,8 @@ const UserRequests = () => {
                         {selectedPharmacyBill.medicines.map((med, medIndex) => (
                           <tr key={medIndex}>
                             <td>{med.name}</td>
-                            <td>{med.type || '-'}</td>
-                            <td>{med.strength || '-'}</td>
+                            <td>{med.type || "-"}</td>
+                            <td>{med.strength || "-"}</td>
                             <td>{med.quantity}</td>
                             <td>{formatCurrency(med.pricePerUnit)}</td>
                             <td>{formatCurrency(med.totalPrice)}</td>
@@ -395,32 +648,110 @@ const UserRequests = () => {
                       </tbody>
                     </table>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 40, marginBottom: 18, fontSize: 16 }}>
-                    <div><b>Medicine Total:</b> {formatCurrency(selectedPharmacyBill.price - (selectedPharmacyBill.deliveryCharges || 0))}</div>
-                    <div><b>Delivery:</b> {formatCurrency(selectedPharmacyBill.deliveryCharges || 0)}</div>
-                    <div style={{ fontWeight: 700, color: '#2ca7a0' }}><b>Grand Total:</b> {formatCurrency(selectedPharmacyBill.price)}</div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      gap: 40,
+                      marginBottom: 18,
+                      fontSize: 16,
+                    }}
+                  >
+                    <div>
+                      <b>Medicine Total:</b>{" "}
+                      {formatCurrency(
+                        selectedPharmacyBill.price -
+                          (selectedPharmacyBill.deliveryCharges || 0),
+                      )}
+                    </div>
+                    <div>
+                      <b>Delivery:</b>{" "}
+                      {formatCurrency(
+                        selectedPharmacyBill.deliveryCharges || 0,
+                      )}
+                    </div>
+                    <div style={{ fontWeight: 700, color: "#2ca7a0" }}>
+                      <b>Grand Total:</b>{" "}
+                      {formatCurrency(selectedPharmacyBill.price)}
+                    </div>
                   </div>
                   {/* Status messages and actions */}
                   {isAccepted ? (
-                    <div style={{ background: '#e3f7e6', color: '#1976d2', borderRadius: 8, padding: '18px 20px', marginBottom: 12, fontWeight: 600, fontSize: 17, textAlign: 'center', border: '2px solid #1976d2' }}>
-                      <span>Order Confirmed! You will get your medicine soon from this pharmacy.</span>
+                    <div
+                      style={{
+                        background: "#e3f7e6",
+                        color: "#1976d2",
+                        borderRadius: 8,
+                        padding: "18px 20px",
+                        marginBottom: 12,
+                        fontWeight: 600,
+                        fontSize: 17,
+                        textAlign: "center",
+                        border: "2px solid #1976d2",
+                      }}
+                    >
+                      <span>
+                        Order Confirmed! You will get your medicine soon from
+                        this pharmacy.
+                      </span>
                     </div>
                   ) : isIgnored ? (
-                    <div style={{ background: '#f5f5f5', color: '#bdbdbd', borderRadius: 8, padding: '18px 20px', marginBottom: 12, fontWeight: 600, fontSize: 17, textAlign: 'center', border: '2px solid #bdbdbd' }}>
-                      <span>This offer was ignored as you accepted another pharmacy's offer.</span>
+                    <div
+                      style={{
+                        background: "#f5f5f5",
+                        color: "#bdbdbd",
+                        borderRadius: 8,
+                        padding: "18px 20px",
+                        marginBottom: 12,
+                        fontWeight: 600,
+                        fontSize: 17,
+                        textAlign: "center",
+                        border: "2px solid #bdbdbd",
+                      }}
+                    >
+                      <span>
+                        This offer was ignored as you accepted another
+                        pharmacy's offer.
+                      </span>
                     </div>
                   ) : isRejected ? (
-                    <div style={{ background: '#fdecea', color: '#d32f2f', borderRadius: 8, padding: '18px 20px', marginBottom: 12, fontWeight: 600, fontSize: 17, textAlign: 'center', border: '2px solid #d32f2f' }}>
+                    <div
+                      style={{
+                        background: "#fdecea",
+                        color: "#d32f2f",
+                        borderRadius: 8,
+                        padding: "18px 20px",
+                        marginBottom: 12,
+                        fontWeight: 600,
+                        fontSize: 17,
+                        textAlign: "center",
+                        border: "2px solid #d32f2f",
+                      }}
+                    >
                       <span>This pharmacy has rejected your request.</span>
                     </div>
                   ) : null}
                   {/* Show action buttons only if not ignored or accepted */}
                   {!isAccepted && !isIgnored && !isRejected && (
-                    <div style={{ display: 'flex', gap: 20, marginTop: 12 }}>
-                      <button className="action-btn accept-response-btn" style={{ fontSize: 16, padding: '12px 28px' }} onClick={() => handleAcceptOffer(selectedPharmacyBill.billId)}>
+                    <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
+                      <button
+                        className="action-btn accept-response-btn"
+                        style={{ fontSize: 16, padding: "12px 28px" }}
+                        onClick={() =>
+                          handleAcceptOffer(selectedPharmacyBill.billId)
+                        }
+                      >
                         Accept Offer
                       </button>
-                      <button className="action-btn contact-pharmacy-btn" style={{ fontSize: 16, padding: '12px 28px' }} onClick={() => handleContactPharmacy(selectedPharmacyBill.pharmacy?.phone)}>
+                      <button
+                        className="action-btn contact-pharmacy-btn"
+                        style={{ fontSize: 16, padding: "12px 28px" }}
+                        onClick={() =>
+                          handleContactPharmacy(
+                            selectedPharmacyBill.pharmacy?.phone,
+                          )
+                        }
+                      >
                         Contact Pharmacy
                       </button>
                     </div>
@@ -436,17 +767,3 @@ const UserRequests = () => {
 };
 
 export default UserRequests;
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -41,7 +41,7 @@ const Footer = () => {
         <div className="footer-col footer-links">
           <h4 className="col-title">Pages</h4>
           <nav className="links-list">
-            <Link to="/">Homeee</Link>
+            <Link to="/">Home</Link>
             <a href="/#how-it-works">How it works</a>
             <a href="/#features">Features</a>
             <a href="/#faq">FAQ</a>
