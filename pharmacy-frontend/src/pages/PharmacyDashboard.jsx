@@ -8,6 +8,7 @@ import "./pharmacyDashboard.css";
 
 import API_BASE_URL from "../api";
 import { toast } from "sonner";
+import Loader from "./Loader";
 
 const PharmacyDashboard = () => {
   const { pharmacy, isLoading: authLoading } = useAuth();
@@ -161,7 +162,7 @@ const PharmacyDashboard = () => {
       console.error("Failed to fetch pharmacy profile:", err);
     }
   };
-
+  if (!fetchPharmacyProfile) return <Loader />;
   // Function to get filter count
 
   const getFilterCount = (filterType) => {
@@ -967,13 +968,9 @@ const PharmacyDashboard = () => {
               </div>
             </div>
 
-            {authLoading && (
-              <div className="loading-msg">Initializing dashboard...</div>
-            )}
+            {authLoading && <Loader />}
 
-            {!authLoading && loading && (
-              <div className="loading-msg">Loading requests...</div>
-            )}
+            {!authLoading && loading && <Loader />}
 
             {!authLoading && error && <div className="error-msg">{error}</div>}
 
@@ -1546,7 +1543,7 @@ const PharmacyDashboard = () => {
                 </div>
 
                 <div className="medicine-popup-content">
-                  {loadingBillDetails && <div>Loading bill details...</div>}
+                  {loadingBillDetails && <Loader />}
 
                   {!loadingBillDetails && billDetails && (
                     <>

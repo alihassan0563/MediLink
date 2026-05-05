@@ -4,6 +4,7 @@ import Header from "../component/Header";
 import "./BuyMedicine.css";
 import API_BASE_URL from "../api";
 import { toast } from "sonner";
+import Loader from "./Loader";
 
 const UserRequests = () => {
   const { customer, isLoading: authLoading } = useAuth();
@@ -161,12 +162,8 @@ const UserRequests = () => {
           }}
         >
           <h2 className="buy-medicine-title">My Requests</h2>
-          {authLoading && (
-            <div className="loading-msg">Initializing dashboard...</div>
-          )}
-          {!authLoading && loading && (
-            <div className="loading-msg">Loading your requests...</div>
-          )}
+          {authLoading && <Loader />}
+          {!authLoading && loading && <Loader />}
           {!authLoading && error && <div className="error-msg">{error}</div>}
           {!authLoading && !loading && !error && requests.length === 0 && (
             <div className="no-requests">

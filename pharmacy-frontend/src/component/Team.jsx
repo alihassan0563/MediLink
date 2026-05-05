@@ -1,18 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 const team = [
-  {
-    name: "Arman Ejaz",
-    role: "Backend & Database Developer",
-    img: "/Arman.jpg",
-  },
-  { name: "Ali Hassan", role: "Frontend Developer", img: "/ali.jpg" },
-  {
-    name: "Sikandar Aftab",
-    role: "Market Research & Analyst",
-    img: "/sikander.jpeg",
-  },
+  // {
+  //   name: "Arman Ejaz",
+  //   role: "Backend & Database Developer",
+  //   img: "/Arman.jpg",
+  // },
+  { name: "Ali Hassan", role: "Frontend Developer", img: "/ali1.jpg" },
+  // {
+  //   name: "Sikandar Aftab",
+  //   role: "Market Research & Analyst",
+  //   img: "/sikander.jpeg",
+  // },
 ];
+const member = team[0];
 
 const Team = () => {
   return (
@@ -20,7 +21,7 @@ const Team = () => {
       <div className="about-team-container">
         <div className="about-team-left">
           <h2 className="about-section-title">
-            Meet the Minds, <span className="highlight"> Behind Our </span>{" "}
+            Meet the Mind, <span className="highlight"> Behind the </span>{" "}
             Innovation:
           </h2>
           <p className="about-section-desc">
@@ -40,20 +41,14 @@ const Team = () => {
             </Link>
           </div>
         </div>
-        <div className="about-team-right">
-          <div className="team-list">
-            {team.map((member, i) => (
-              <div key={i} className="team-member-item">
-                <div className="team-member-avatar">
-                  <img src={member.img} alt={member.name} />
-                </div>
-                <div className="team-member-info">
-                  <div className="team-member-name">{member.name}</div>
-                  <div className="team-member-role">{member.role}</div>
-                </div>
-              </div>
-            ))}
+        <div className="team-member-item single">
+          <div className="team-member-image">
+            <img src={member.img} alt={member.name} />
           </div>
+
+          {/* <div className="team-member-info">
+            <div className="team-member-name">{member.name}</div>
+          </div> */}
         </div>
       </div>
     </section>

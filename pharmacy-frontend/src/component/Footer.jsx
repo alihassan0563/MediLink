@@ -93,7 +93,7 @@ const Footer = () => {
               <span>Facebook</span>
             </a>
             <a
-              href="https://wa.me/923001234567"
+              href="https://wa.me/923462240103"
               target="_blank"
               rel="noreferrer"
               aria-label="WhatsApp"
@@ -113,7 +113,7 @@ const Footer = () => {
               </svg>
               <span>WhatsApp</span>
             </a>
-            <a href="tel:+923001234567" className="social-item">
+            <a href="tel:+923462240103" className="social-item">
               <svg
                 viewBox="0 0 24 24"
                 width="20"
@@ -125,7 +125,7 @@ const Footer = () => {
                   d="M6.6 10.8a15.5 15.5 0 006.6 6.6l2.2-2.2a1 1 0 011-.26 11.5 11.5 0 003.6.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.5 11.5 0 00.57 3.6 1 1 0 01-.26 1l-2.2 2.2z"
                 />
               </svg>
-              <span>+92 300 1234567</span>
+              <span>+92 346 2240103</span>
             </a>
           </div>
         </div>

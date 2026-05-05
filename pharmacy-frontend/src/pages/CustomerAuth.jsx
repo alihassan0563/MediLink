@@ -31,29 +31,33 @@ const CustomerAuth = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pharmacy, loginCustomer } = useAuth();
-  const [showInfoModal, setShowInfoModal] = useState(location.state?.redirectTo === "/select-pharmacy");
+  const [showInfoModal, setShowInfoModal] = useState(
+    location.state?.redirectTo === "/select-pharmacy",
+  );
 
-  const handleChange = e => {
-    if (e.target.name === 'email') {
+  const handleChange = (e) => {
+    if (e.target.name === "email") {
       setEmailError("");
     }
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setEmailError("");
-    
+
     // Check if pharmacy is logged in before allowing customer login
     if (!isSignup && pharmacy) {
-      setError("A pharmacy is currently logged in. Please logout the pharmacy first or the pharmacy session will be automatically cleared.");
+      setError(
+        "A pharmacy is currently logged in. Please logout the pharmacy first or the pharmacy session will be automatically cleared.",
+      );
     }
-    
+
     try {
       const endpoint = isSignup ? "/signup" : "/login";
       const headers = { "Content-Type": "application/json" };
-      
+
       // Send pharmacy token if exists to check for conflicts
       if (!isSignup) {
         const pharmacyToken = localStorage.getItem("pharmacy_token");
@@ -61,15 +65,18 @@ const CustomerAuth = () => {
           headers.Authorization = `Bearer ${pharmacyToken}`;
         }
       }
-      
+
       const res = await fetch(API_URL + endpoint, {
         method: "POST",
         headers,
-        body: JSON.stringify(form)
+        body: JSON.stringify(form),
       });
       const data = await res.json();
       if (!res.ok) {
-        if (isSignup && (data?.message || "").toLowerCase().includes("invalid or risky email")) {
+        if (
+          isSignup &&
+          (data?.message || "").toLowerCase().includes("invalid or risky email")
+        ) {
           const msg = "Email is invalid or risky. Please use a valid email.";
           setEmailError(msg);
           setError(msg);
@@ -82,7 +89,10 @@ const CustomerAuth = () => {
         loginCustomer(data.user, data.token);
         const redirectTo = location.state?.redirectTo || "/";
         const pendingOrder = location.state?.pendingOrder;
-        navigate(redirectTo, { state: pendingOrder ? pendingOrder : undefined, replace: true });
+        navigate(redirectTo, {
+          state: pendingOrder ? pendingOrder : undefined,
+          replace: true,
+        });
       } else {
         setIsSignup(false);
         setError("Signup successful! Please login.");
@@ -107,10 +117,18 @@ const CustomerAuth = () => {
       <Header />
       <div className="auth-container">
         <div className="auth-inner">
-          <h2 className="auth-title">{isSignup ? "Customer Signup" : "Customer Login"}</h2>
-          <form className="auth-form" onSubmit={handleSubmit} autoComplete="off">
+          <h2 className="auth-title">
+            {isSignup ? "Customer Signup" : "Customer Login"}
+          </h2>
+          <form
+            className="auth-form"
+            onSubmit={handleSubmit}
+            autoComplete="off"
+          >
             <div className="form-section">
-              <label className="form-label" htmlFor="email">Email</label>
+              <label className="form-label" htmlFor="email">
+                Email
+              </label>
               <input
                 id="email"
                 name="email"
@@ -122,12 +140,23 @@ const CustomerAuth = () => {
                 required
               />
               {isSignup && emailError && (
-                <div className="field-error" style={{ color: '#c53030', fontSize: '0.85rem', marginTop: '0.25rem' }}>{emailError}</div>
+                <div
+                  className="field-error"
+                  style={{
+                    color: "#c53030",
+                    fontSize: "0.85rem",
+                    marginTop: "0.25rem",
+                  }}
+                >
+                  {emailError}
+                </div>
               )}
             </div>
             {isSignup && (
               <div className="form-section">
-                <label className="form-label" htmlFor="phone">Phone Number</label>
+                <label className="form-label" htmlFor="phone">
+                  Phone Number
+                </label>
                 <input
                   id="phone"
                   name="phone"
@@ -143,7 +172,9 @@ const CustomerAuth = () => {
               </div>
             )}
             <div className="form-section">
-              <label className="form-label" htmlFor="password">Password</label>
+              <label className="form-label" htmlFor="password">
+                Password
+              </label>
               <input
                 id="password"
                 name="password"
@@ -155,17 +186,43 @@ const CustomerAuth = () => {
                 required
               />
             </div>
-            <button className="submit-btn" type="submit">{isSignup ? "Sign Up" : "Login"}</button>
-            {error && <div className={error.includes("success") ? "success-msg" : "error-msg"}>{error}</div>}
+            <button className="submit-btn" type="submit">
+              {isSignup ? "Sign Up" : "Login"}
+            </button>
+            {error && (
+              <div
+                className={
+                  error.includes("success") ? "success-msg" : "error-msg"
+                }
+              >
+                {error}
+              </div>
+            )}
           </form>
           <div className="auth-switch">
             {isSignup ? (
               <>
-                Already have an account? <button onClick={() => { setIsSignup(false); setError(""); }}>Login</button>
+                Already have an account?{" "}
+                <button
+                  onClick={() => {
+                    setIsSignup(false);
+                    setError("");
+                  }}
+                >
+                  Login
+                </button>
               </>
             ) : (
               <>
-                New customer? <button onClick={() => { setIsSignup(true); setError(""); }}>Sign Up</button>
+                New customer?{" "}
+                <button
+                  onClick={() => {
+                    setIsSignup(true);
+                    setError("");
+                  }}
+                >
+                  Sign Up
+                </button>
               </>
             )}
           </div>
@@ -186,7 +243,7 @@ const CustomerAuth = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 2000
+            zIndex: 2000,
           }}
         >
           <div
@@ -198,16 +255,31 @@ const CustomerAuth = () => {
               boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
               maxWidth: 520,
               width: "90%",
-              color: "#23424a"
+              color: "#23424a",
             }}
           >
-            <div className="modal-title" style={{ fontWeight: 700, fontSize: "1.05rem", textAlign: "center" }}>
+            <div
+              className="modal-title"
+              style={{
+                fontWeight: 700,
+                fontSize: "1.05rem",
+                textAlign: "center",
+              }}
+            >
               Please log in or sign up to continue.
             </div>
             <p style={{ marginTop: "0.6rem", textAlign: "center" }}>
-              After logging in, you'll be redirected to Select Pharmacy, and your entered medicines and delivery details will be saved.
+              After logging in, you'll be redirected to Select Pharmacy, and
+              your entered medicines and delivery details will be saved.
             </p>
-            <div className="modal-actions" style={{ marginTop: "0.9rem", display: "flex", justifyContent: "center" }}>
+            <div
+              className="modal-actions"
+              style={{
+                marginTop: "0.9rem",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <button
                 type="button"
                 className="modal-btn"
@@ -219,7 +291,7 @@ const CustomerAuth = () => {
                   borderRadius: 9999,
                   padding: "0.5rem 1rem",
                   cursor: "pointer",
-                  fontWeight: 600
+                  fontWeight: 600,
                 }}
               >
                 OK
@@ -232,4 +304,4 @@ const CustomerAuth = () => {
   );
 };
 
-export default CustomerAuth; 
+export default CustomerAuth;

@@ -1,7 +1,7 @@
 /* About Us Page Styles - Modern Multi-Section Layout */
 
 .about-page {
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   background: #ffffff;
   color: #333;
   line-height: 1.6;
@@ -67,7 +67,12 @@
 
 /* Hero Section */
 .about-hero-section {
-  background: linear-gradient(135deg, rgba(44, 167, 160, 0.2) 0%, rgba(59, 178, 169, 0.15) 50%, rgba(255, 255, 255, 0.95) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(44, 167, 160, 0.2) 0%,
+    rgba(59, 178, 169, 0.15) 50%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
   padding: 4rem 0;
   min-height: 80vh;
   display: flex;
@@ -77,13 +82,17 @@
 }
 
 .about-hero-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(44, 167, 160, 0.05) 0%, rgba(59, 178, 169, 0.02) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(44, 167, 160, 0.05) 0%,
+    rgba(59, 178, 169, 0.02) 100%
+  );
   z-index: 1;
 }
 
@@ -243,21 +252,37 @@
 .feature-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-  background: #2CA7A0; /* hover bg */
+  background: #2ca7a0; /* hover bg */
   color: #ffffff; /* make text white */
 }
 
 /* Ensure headings and paragraphs inherit hover color */
-.feature-card h3 { color: #23424a; }
-.feature-card p { color: #666; }
+.feature-card h3 {
+  color: #23424a;
+}
+.feature-card p {
+  color: #666;
+}
 .feature-card:hover h3,
-.feature-card:hover p { color: #ffffff; }
+.feature-card:hover p {
+  color: #ffffff;
+}
 
 /* Icon treatment on hover: keep icons unchanged */
-.feature-card .feature-icon img { filter: none; transition: none; }
-.feature-card:hover .feature-icon img { filter: none; }
-.feature-card .feature-icon svg { stroke: #111; transition: none; }
-.feature-card:hover .feature-icon svg { stroke: #111; }
+.feature-card .feature-icon img {
+  filter: none;
+  transition: none;
+}
+.feature-card:hover .feature-icon img {
+  filter: none;
+}
+.feature-card .feature-icon svg {
+  stroke: #111;
+  transition: none;
+}
+.feature-card:hover .feature-icon svg {
+  stroke: #111;
+}
 
 .feature-card.primary {
   background: #2ca7a0;
@@ -302,7 +327,7 @@
 }
 
 .about-partners-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -350,13 +375,18 @@
 }
 
 .partner-logo::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(44, 167, 160, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(44, 167, 160, 0.1),
+    transparent
+  );
   transition: left 0.6s ease;
 }
 
@@ -374,7 +404,7 @@
 
 .partner-name {
   display: block;
-  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  font-family: "Poppins", "Segoe UI", Arial, sans-serif;
   font-weight: 700;
   font-size: 1.2rem;
   color: #23424a;
@@ -414,7 +444,7 @@
 }
 
 .about-team-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -447,6 +477,7 @@
 
 .team-member-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 1.5rem;
   padding: 0.5rem;
@@ -460,13 +491,18 @@
 }
 
 .team-member-item::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(44, 167, 160, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(44, 167, 160, 0.1),
+    transparent
+  );
   transition: left 0.6s ease;
 }
 
@@ -481,9 +517,9 @@
 }
 
 .team-member-avatar {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
+  width: auto;
+  height: 350px;
+  border-radius: 5%;
   overflow: hidden;
   flex-shrink: 0;
   border: 4px solid #e9ecef;
@@ -519,7 +555,7 @@
 }
 
 .team-member-name {
-  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  font-family: "Poppins", "Segoe UI", Arial, sans-serif;
   font-weight: 800;
   color: #23424a;
   font-size: 1.3rem;
@@ -614,11 +650,11 @@
     grid-template-columns: 1fr;
     gap: 3rem;
   }
-  
+
   .about-hero-left h1 {
     font-size: 3rem;
   }
-  
+
   .about-stats {
     grid-template-columns: 1fr;
   }
@@ -633,37 +669,37 @@
   .about-why-choose-section {
     padding: 3rem 0;
   }
-  
+
   .about-hero-container,
   .about-timeline-container,
   .about-team-container,
   .about-why-choose-container {
     padding: 0 1rem;
   }
-  
+
   .about-hero-left h1 {
     font-size: 2.5rem;
   }
-  
+
   .about-section-title {
     font-size: 2rem;
   }
-  
+
   .features-grid {
     grid-template-columns: 1fr;
     padding: 0 1rem;
   }
-  
+
   .partners-grid {
     grid-template-columns: repeat(2, 1fr);
     padding: 0 1rem;
   }
-  
+
   .about-hero-buttons,
   .about-team-buttons {
     flex-direction: column;
   }
-  
+
   .about-btn {
     text-align: center;
   }
@@ -673,15 +709,15 @@
   .about-hero-left h1 {
     font-size: 2rem;
   }
-  
+
   .about-section-title {
     font-size: 1.8rem;
   }
-  
+
   .partners-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .stat-number {
     font-size: 2rem;
   }

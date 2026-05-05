@@ -4,6 +4,7 @@ import "./BuyMedicine.css";
 import { useAuth } from "../AuthContext";
 import API_BASE_URL from "../api";
 import { toast } from "sonner";
+import Loader from "./Loader";
 
 const cities = [
   "Lahore",
@@ -80,7 +81,7 @@ const SelectPharmacy = () => {
               ))}
             </select>
           </div>
-          {loading && <div>Loading pharmacies...</div>}
+          {loading && <Loader />}
           {error && <div className="error-msg">{error}</div>}
           {!loading && !error && city && pharmacies.length === 0 && (
             <div>No pharmacies found in this city.</div>
